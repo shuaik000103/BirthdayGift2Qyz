@@ -1,0 +1,806 @@
+﻿const LOGIN_SESSION_KEY = "birthdayMuseumLoggedIn";
+const PHOTO_USERNAME_SESSION_KEY = "birthdayMuseumPhotoUsername";
+const PHOTO_PASSWORD_SESSION_KEY = "birthdayMuseumPhotoPassword";
+
+const exhibits = [
+  {
+    code: "A-01",
+    title: "可爱瞬间馆",
+    image: "pics/birthday-person.jpg",
+    alt: "拿着生日蛋糕的人像占位图",
+    text: "那些一想到就会笑出来的小瞬间，都应该被好好保存。以后这里可以换成她的照片，再配一句只有你们懂的话。"
+  },
+  {
+    code: "A-02",
+    title: "金句收藏柜",
+    image: "pics/portrait.jpg",
+    alt: "微笑人像占位图",
+    text: "她说过的口头禅、聊天里的名场面、突然冒出来的可爱发言，都可以被认真收进这个柜子里。"
+  },
+  {
+    code: "A-03",
+    title: "高光放映室",
+    image: "pics/party.jpg",
+    alt: "生日派对占位图",
+    text: "生日祝福不一定只说快乐，也可以认真告诉她：你看见了她的努力、勇敢和那些闪光的时刻。"
+  },
+  {
+    code: "A-04",
+    title: "友情补给站",
+    image: "pics/coffee-friends.jpg",
+    alt: "朋友聚会占位图",
+    text: "这里可以放一些可兑换的小承诺：一顿饭、一杯奶茶、一次陪逛，或者一次随叫随到的情绪补给。"
+  }
+];
+
+const stories = [
+  {
+    year: "2021",
+    title: "第一次被记住的瞬间",
+    image: "pics/party.jpg",
+    text: "有些人出现得很自然，却会在后来变成生活里很重要的注脚。"
+  },
+  {
+    year: "2022",
+    title: "一起笑到停不下来",
+    image: "pics/coffee-friends.jpg",
+    text: "普通的一天，因为有人一起分享，就突然变成了很值得回看的片段。"
+  },
+  {
+    year: "2023",
+    title: "把普通日子过成纪念日",
+    image: "pics/coffee-cups.jpg",
+    text: "不是每个纪念日都需要隆重，有时候一杯热饮、一句玩笑，就足够被记很久。"
+  },
+  {
+    year: "2026",
+    title: "今天，把祝福郑重送达",
+    image: "pics/cake.jpg",
+    text: "新的一岁已经开始，愿她继续拥有明亮、具体、不会迟到的快乐。"
+  }
+];
+
+const photos = [
+  {
+    image: "pics/birthday-person.jpg",
+    alt: "生日人像占位图",
+    caption: "今天是她的主场。"
+  },
+  {
+    image: "pics/cake.jpg",
+    alt: "生日蛋糕占位图",
+    caption: "愿望藏在烛光里。"
+  },
+  {
+    image: "pics/party.jpg",
+    alt: "生日派对占位图",
+    caption: "每次热闹都值得留下。"
+  },
+  {
+    image: "pics/coffee-friends.jpg",
+    alt: "朋友聚会占位图",
+    caption: "下次见面继续补给快乐。"
+  },
+  {
+    image: "pics/portrait.jpg",
+    alt: "微笑人像占位图",
+    caption: "每个认真发光的瞬间都值得被看见。"
+  },
+  {
+    image: "pics/coffee-cups.jpg",
+    alt: "咖啡约定占位图",
+    caption: "把下一次见面提前写进愿望里。"
+  }
+];
+
+const wishes = [
+  "愿你新的一岁，继续被喜欢的事情围绕，也被温柔的人认真对待。",
+  "愿今天所有的小确幸，都排着队走向你。",
+  "愿你保持可爱，也保持锋利，想要的东西都能慢慢靠近。",
+  "愿这一岁，快乐不用等，幸运不用找，你一直在自己的光里。",
+  "愿你吃到喜欢的蛋糕，遇到好天气，也收到很多真心。",
+  "愿你疲惫时有地方休息，开心时有人认真听你分享。"
+];
+
+const gifts = [
+  "快乐补给券已打开：凭此券可以兑换一次认真陪聊，不限时长。",
+  "奶茶兑换券已打开：下次见面，第一杯甜的由送礼人负责。",
+  "陪伴通行证已打开：想出门、想吐槽、想发呆，都可以随时呼叫。"
+];
+
+const loginScreen = document.querySelector("#loginScreen");
+const loginForm = document.querySelector("#loginForm");
+const loginError = document.querySelector("#loginError");
+const loginSubmit = loginForm.querySelector(".login-submit");
+const siteShell = document.querySelector("#siteShell");
+const modal = document.querySelector("#exhibitModal");
+const modalCode = document.querySelector("#modalCode");
+const modalImage = document.querySelector("#modalImage");
+const modalTitle = document.querySelector("#modalTitle");
+const modalText = document.querySelector("#modalText");
+const photoModal = document.querySelector("#photoModal");
+const photoModalImage = document.querySelector("#photoModalImage");
+const photoCaption = document.querySelector("#photoCaption");
+const toast = document.querySelector("#toast");
+const header = document.querySelector(".site-header");
+const wishCard = document.querySelector("#wishCard");
+const canvas = document.querySelector("#sparkles");
+const ctx = canvas.getContext("2d");
+const timelinePreviewImage = document.querySelector("#timelinePreview img");
+const timelineYear = document.querySelector("#timelineYear");
+const timelineStoryTitle = document.querySelector("#timelineStoryTitle");
+const timelineStoryText = document.querySelector("#timelineStoryText");
+const starSky = document.querySelector("#starSky");
+const starForm = document.querySelector("#starForm");
+const starInput = document.querySelector("#starInput");
+const starMessage = document.querySelector("#starMessage");
+const giftCount = document.querySelector("#giftCount");
+const giftResult = document.querySelector("#giftResult");
+const letterHidden = document.querySelector("#letterHidden");
+
+let toastTimer;
+let particles = [];
+let fireworkShells = [];
+let lastParticleFrameAt = performance.now();
+const openedGifts = new Set();
+const FIREWORK_PALETTES = [
+  ["#fff7cf", "#ffd166", "#ff9f1c"],
+  ["#fff0f5", "#ff5f8f", "#b84cff"],
+  ["#eaffff", "#66e6ff", "#2ec4b6"],
+  ["#fff9f1", "#ffffff", "#f7b267"],
+  ["#f8ecff", "#c77dff", "#7b2cbf"]
+];
+const MAX_FIREWORK_SHELLS = 10;
+const MAX_FIREWORK_PARTICLES = 680;
+const FIREWORK_FRAME_INTERVAL = 1000 / 45;
+
+function setHeaderState() {
+  header.classList.toggle("is-scrolled", window.scrollY > 24);
+}
+
+function enterMuseum(options = {}) {
+  const shouldAnimate = options.animate !== false;
+  sessionStorage.setItem(LOGIN_SESSION_KEY, "1");
+  loginScreen.classList.add("is-hidden");
+  siteShell.classList.add("is-ready");
+  siteShell.setAttribute("aria-hidden", "false");
+  document.body.classList.remove("is-locked");
+
+  if (!shouldAnimate) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    burst(window.innerWidth * 0.5, window.innerHeight * 0.36);
+  }, 260);
+}
+
+function validateLoginInput(username, password) {
+  return Boolean(username && password);
+}
+
+function buildPhotoVaultSecret(username, password) {
+  return `${username}\n${password}`;
+}
+
+function resolvePhotoUrl(source) {
+  return window.birthdayPhotoVault?.getPhotoUrl(source) || source;
+}
+
+async function unlockPhotosWithLoginCredentials(username, password) {
+  if (!window.birthdayPhotoVault) {
+    throw new Error("photo-vault-unavailable");
+  }
+
+  const result = await window.birthdayPhotoVault.unlock(buildPhotoVaultSecret(username, password));
+  sessionStorage.setItem(PHOTO_USERNAME_SESSION_KEY, username);
+  sessionStorage.setItem(PHOTO_PASSWORD_SESSION_KEY, password);
+  return result;
+}
+
+function clearSavedLogin() {
+  sessionStorage.removeItem(LOGIN_SESSION_KEY);
+  sessionStorage.removeItem(PHOTO_USERNAME_SESSION_KEY);
+  sessionStorage.removeItem(PHOTO_PASSWORD_SESSION_KEY);
+}
+
+function getPhotoUnlockErrorMessage(error) {
+  if (error?.message === "photo-vault-invalid-password") {
+    return "账号或密码不正确，照片没有解锁。";
+  }
+
+  if (error?.message === "photo-vault-crypto-unavailable") {
+    return "当前浏览器不支持照片解密，请换新版 Chrome 或 Edge。";
+  }
+
+  if (String(error?.message || "").startsWith("photo-vault-fetch-failed")) {
+    return "没有找到加密照片文件，请先运行加密脚本。";
+  }
+
+  return "照片解锁失败，请检查密码或加密文件。";
+}
+
+function openModal(index) {
+  const exhibit = exhibits[index];
+  modalCode.textContent = exhibit.code;
+  modalImage.src = resolvePhotoUrl(exhibit.image);
+  modalImage.alt = exhibit.alt;
+  modalTitle.textContent = exhibit.title;
+  modalText.textContent = exhibit.text;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeModal() {
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  photoModal.classList.remove("is-open");
+  photoModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
+
+function openPhotoModal(index) {
+  const photo = photos[index];
+  photoModalImage.src = resolvePhotoUrl(photo.image);
+  photoModalImage.alt = photo.alt;
+  photoCaption.textContent = photo.caption;
+  photoModal.classList.add("is-open");
+  photoModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("is-visible");
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    toast.classList.remove("is-visible");
+  }, 2600);
+}
+
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(window.innerWidth * ratio);
+  canvas.height = Math.floor(window.innerHeight * ratio);
+  canvas.style.width = `${window.innerWidth}px`;
+  canvas.style.height = `${window.innerHeight}px`;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+
+function randomBetween(minimum, maximum) {
+  return minimum + Math.random() * (maximum - minimum);
+}
+
+function pickRandom(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function easeOutCubic(progress) {
+  return 1 - Math.pow(1 - progress, 3);
+}
+
+function blendHexColors(leftColor, rightColor, ratio) {
+  const normalizedRatio = Math.max(0, Math.min(1, ratio));
+  const left = leftColor.replace("#", "");
+  const right = rightColor.replace("#", "");
+  const channels = [0, 2, 4].map((offset) => {
+    const leftValue = Number.parseInt(left.slice(offset, offset + 2), 16);
+    const rightValue = Number.parseInt(right.slice(offset, offset + 2), 16);
+    return Math.round(leftValue + (rightValue - leftValue) * normalizedRatio)
+      .toString(16)
+      .padStart(2, "0");
+  });
+
+  return `#${channels.join("")}`;
+}
+
+function trimFireworkLoad() {
+  if (fireworkShells.length > MAX_FIREWORK_SHELLS) {
+    fireworkShells.splice(0, fireworkShells.length - MAX_FIREWORK_SHELLS);
+  }
+
+  if (particles.length > MAX_FIREWORK_PARTICLES) {
+    particles.splice(0, particles.length - MAX_FIREWORK_PARTICLES);
+  }
+}
+
+function launchFireworkShell(targetX, targetY, options = {}) {
+  const palette = pickRandom(FIREWORK_PALETTES);
+  const shellSpread = options.spread ?? 0;
+  const safeTargetX = Math.max(48, Math.min(window.innerWidth - 48, targetX + randomBetween(-shellSpread / 2, shellSpread / 2)));
+  const safeTargetY = Math.max(80, Math.min(window.innerHeight - 70, targetY + randomBetween(-42, 42)));
+  const shell = {
+    age: 0,
+    arc: randomBetween(18, 48),
+    color: pickRandom(palette),
+    duration: randomBetween(360, 560),
+    palette,
+    startX: safeTargetX + randomBetween(-120, 120),
+    startY: window.innerHeight + 30,
+    targetX: safeTargetX,
+    targetY: safeTargetY,
+    trail: [],
+    wobble: randomBetween(8, 22),
+    wobblePhase: randomBetween(1.8, 3.8),
+    x: safeTargetX,
+    y: window.innerHeight + 30
+  };
+
+  fireworkShells.push(shell);
+  trimFireworkLoad();
+}
+
+function createFireworkParticle(x, y, velocityX, velocityY, color, options = {}) {
+  const particleLife = options.life ?? randomBetween(62, 106);
+
+  particles.push({
+    air: options.air ?? randomBetween(0.972, 0.988),
+    color,
+    crackleAt: options.crackleAt ?? 0,
+    gravity: options.gravity ?? randomBetween(0.045, 0.08),
+    life: particleLife,
+    maxLife: particleLife,
+    shimmer: Math.random() > 0.55,
+    shimmerPhase: randomBetween(0, Math.PI * 2),
+    size: options.size ?? randomBetween(1.3, 2.8),
+    trail: [],
+    trailLength: options.trailLength ?? 7,
+    vx: velocityX,
+    vy: velocityY,
+    x,
+    y
+  });
+}
+
+function explodeFirework(shell) {
+  const burstSize = 52 + Math.floor(Math.random() * 26);
+  const ringOffset = Math.random() * Math.PI * 2;
+
+  for (let index = 0; index < burstSize; index += 1) {
+    const angle = (index / burstSize) * Math.PI * 2 + ringOffset + randomBetween(-0.035, 0.035);
+    const speed = randomBetween(2.4, 6.4) * (index % 3 === 0 ? 1.08 : 1);
+    const color = index % 5 === 0 ? "#fffdf4" : pickRandom(shell.palette);
+    createFireworkParticle(shell.targetX, shell.targetY, Math.cos(angle) * speed, Math.sin(angle) * speed, color, {
+      crackleAt: Math.random() > 0.9 ? randomBetween(18, 34) : 0,
+      life: randomBetween(54, 90),
+      size: randomBetween(1.1, 2),
+      trailLength: 5
+    });
+  }
+
+  for (let index = 0; index < 10; index += 1) {
+    const angle = (index / 10) * Math.PI * 2 + ringOffset;
+    const speed = randomBetween(2.4, 4.4);
+    createFireworkParticle(shell.targetX, shell.targetY, Math.cos(angle) * speed, Math.sin(angle) * speed - randomBetween(0.2, 1.1), blendHexColors("#ffffff", shell.color, 0.42), {
+      air: 0.986,
+      gravity: 0.105,
+      life: randomBetween(82, 116),
+      size: randomBetween(1, 1.6),
+      trailLength: 7
+    });
+  }
+
+  particles.push({
+    color: "#ffffff",
+    flash: true,
+    life: 12,
+    maxLife: 12,
+    size: randomBetween(24, 34),
+    x: shell.targetX,
+    y: shell.targetY
+  });
+  trimFireworkLoad();
+}
+
+function burst(x = window.innerWidth / 2, y = window.innerHeight / 2, options = {}) {
+  const shellCount = options.shells ?? 1;
+  const spread = options.spread ?? 120;
+
+  for (let index = 0; index < shellCount; index += 1) {
+    window.setTimeout(() => {
+      launchFireworkShell(x, y, { spread });
+    }, index * randomBetween(90, 150));
+  }
+}
+
+function getVisibleFireworkRect(element) {
+  if (!element) {
+    return {
+      height: window.innerHeight,
+      left: 0,
+      top: 0,
+      width: window.innerWidth
+    };
+  }
+
+  const rect = element.getBoundingClientRect();
+  const left = Math.max(0, rect.left);
+  const top = Math.max(0, rect.top);
+  const right = Math.min(window.innerWidth, rect.right);
+  const bottom = Math.min(window.innerHeight, rect.bottom);
+
+  if (right <= left || bottom <= top) {
+    return {
+      height: window.innerHeight,
+      left: 0,
+      top: 0,
+      width: window.innerWidth
+    };
+  }
+
+  return {
+    height: bottom - top,
+    left,
+    top,
+    width: right - left
+  };
+}
+
+function showFireworkShow(rect, options = {}) {
+  const shellCount = options.shells ?? 10;
+  const duration = options.duration ?? 1300;
+  const insetX = rect.width * 0.1;
+  const insetY = rect.height * 0.1;
+  const showWidth = rect.width * 0.8;
+  const showHeight = rect.height * 0.8;
+  const columns = Math.max(3, Math.ceil(Math.sqrt(shellCount * 1.25)));
+  const rows = Math.ceil(shellCount / columns);
+
+  for (let index = 0; index < shellCount; index += 1) {
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const targetX = rect.left + insetX + ((column + randomBetween(0.18, 0.82)) / columns) * showWidth;
+    const targetY = rect.top + insetY + ((row + randomBetween(0.18, 0.82)) / rows) * showHeight;
+    const delay = (duration / Math.max(shellCount - 1, 1)) * index + randomBetween(0, 80);
+
+    window.setTimeout(() => {
+      launchFireworkShell(targetX, targetY);
+    }, delay);
+  }
+}
+
+function showScreenFireworks(options = {}) {
+  showFireworkShow(getVisibleFireworkRect(null), options);
+}
+
+function showElementFireworks(element, options = {}) {
+  showFireworkShow(getVisibleFireworkRect(element), options);
+}
+
+function drawFireworkShell(shell) {
+  ctx.strokeStyle = shell.color;
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+
+  for (let index = 1; index < shell.trail.length; index += 1) {
+    const current = shell.trail[index - 1];
+    const previous = shell.trail[index];
+    ctx.globalAlpha = (1 - index / shell.trail.length) * 0.8;
+    ctx.beginPath();
+    ctx.moveTo(previous.x, previous.y);
+    ctx.lineTo(current.x, current.y);
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#fffdf4";
+  ctx.shadowColor = shell.color;
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.arc(shell.x, shell.y, 2.6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+function drawFireworkParticle(particle) {
+  if (particle.flash) {
+    const alpha = Math.max(particle.life / particle.maxLife, 0);
+    const gradient = ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, particle.size);
+    gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.75})`);
+    gradient.addColorStop(0.38, `rgba(255, 214, 102, ${alpha * 0.28})`);
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = gradient;
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
+    return;
+  }
+
+  const lifeRatio = Math.max(particle.life / particle.maxLife, 0);
+  const flicker = particle.shimmer ? 0.76 + Math.sin(particle.life * 0.7 + particle.shimmerPhase) * 0.18 : 1;
+  ctx.strokeStyle = particle.color;
+  ctx.lineWidth = Math.max(1, particle.size * 0.75);
+  ctx.lineCap = "round";
+
+  for (let index = 1; index < particle.trail.length; index += 1) {
+    const current = particle.trail[index - 1];
+    const previous = particle.trail[index];
+    ctx.globalAlpha = lifeRatio * (1 - index / particle.trail.length) * 0.72;
+    ctx.beginPath();
+    ctx.moveTo(previous.x, previous.y);
+    ctx.lineTo(current.x, current.y);
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = Math.min(1, lifeRatio * 1.2) * flicker;
+  ctx.fillStyle = particle.color;
+  ctx.beginPath();
+  ctx.arc(particle.x, particle.y, Math.max(0.7, particle.size * lifeRatio), 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function updateFireworkShell(shell, frameScale) {
+  shell.age += frameScale * 16.67;
+  const progress = Math.min(shell.age / shell.duration, 1);
+  const easedProgress = easeOutCubic(progress);
+  shell.x = shell.startX + (shell.targetX - shell.startX) * easedProgress + Math.sin(progress * Math.PI * shell.wobblePhase) * shell.wobble;
+  shell.y = shell.startY + (shell.targetY - shell.startY) * easedProgress - Math.sin(progress * Math.PI) * shell.arc;
+  shell.trail.unshift({ x: shell.x, y: shell.y });
+
+  if (shell.trail.length > 10) {
+    shell.trail.pop();
+  }
+
+  if (progress >= 1) {
+    explodeFirework(shell);
+    return false;
+  }
+
+  return true;
+}
+
+function updateFireworkParticle(particle, frameScale) {
+  if (particle.flash) {
+    particle.life -= frameScale;
+    return particle.life > 0;
+  }
+
+  particle.trail.unshift({ x: particle.x, y: particle.y });
+
+  if (particle.trail.length > particle.trailLength) {
+    particle.trail.pop();
+  }
+
+  particle.x += particle.vx * frameScale;
+  particle.y += particle.vy * frameScale;
+  particle.vx *= Math.pow(particle.air, frameScale);
+  particle.vy = particle.vy * Math.pow(particle.air, frameScale) + particle.gravity * frameScale;
+  particle.life -= frameScale;
+
+  if (particle.crackleAt && particle.maxLife - particle.life > particle.crackleAt) {
+    particle.crackleAt = 0;
+
+    for (let index = 0; index < 3; index += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = randomBetween(0.8, 2.3);
+      createFireworkParticle(particle.x, particle.y, Math.cos(angle) * speed, Math.sin(angle) * speed, blendHexColors("#ffffff", particle.color, 0.35), {
+        gravity: 0.055,
+        life: randomBetween(24, 44),
+        size: randomBetween(0.8, 1.5),
+        trailLength: 5
+      });
+    }
+  }
+
+  return particle.life > 0;
+}
+
+function animateParticles(timestamp = performance.now()) {
+  if (timestamp - lastParticleFrameAt < FIREWORK_FRAME_INTERVAL) {
+    requestAnimationFrame(animateParticles);
+    return;
+  }
+
+  const frameScale = Math.min(Math.max((timestamp - lastParticleFrameAt) / 16.67, 0.75), 2.4);
+  lastParticleFrameAt = timestamp;
+
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  ctx.globalCompositeOperation = "lighter";
+  fireworkShells = fireworkShells.filter((shell) => {
+    const isAlive = updateFireworkShell(shell, frameScale);
+    drawFireworkShell(shell);
+    return isAlive;
+  });
+  particles = particles.filter((particle) => {
+    const isAlive = updateFireworkParticle(particle, frameScale);
+    drawFireworkParticle(particle);
+    return isAlive;
+  });
+
+  ctx.globalCompositeOperation = "source-over";
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
+  requestAnimationFrame(animateParticles);
+}
+
+function updateTimeline(index) {
+  const story = stories[index];
+  timelinePreviewImage.src = resolvePhotoUrl(story.image);
+  timelinePreviewImage.alt = `${story.year} 回忆图片`;
+  timelineYear.textContent = story.year;
+  timelineStoryTitle.textContent = story.title;
+  timelineStoryText.textContent = story.text;
+}
+
+function addUserStar(x, y) {
+  const star = document.createElement("span");
+  star.className = "user-star";
+  star.style.left = `${x}px`;
+  star.style.top = `${y}px`;
+  starSky.appendChild(star);
+}
+
+window.birthdayMuseum = {
+  burst,
+  closeModal,
+  getPhotoUrl: resolvePhotoUrl,
+  openPhotoModal,
+  showToast
+};
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const data = new FormData(loginForm);
+  const username = String(data.get("username") || "").trim();
+  const password = String(data.get("password") || "");
+
+  if (!validateLoginInput(username, password)) {
+    loginError.textContent = "账号或密码不正确。";
+    return;
+  }
+
+  try {
+    loginSubmit.disabled = true;
+    loginError.textContent = "正在解锁照片，请稍等。";
+    await unlockPhotosWithLoginCredentials(username, password);
+    loginError.textContent = "";
+    enterMuseum();
+  } catch (error) {
+    clearSavedLogin();
+    loginError.textContent = getPhotoUnlockErrorMessage(error);
+  } finally {
+    loginSubmit.disabled = false;
+  }
+});
+document.querySelectorAll("[data-exhibit]").forEach((card) => {
+  card.addEventListener("click", () => {
+    openModal(Number(card.dataset.exhibit));
+  });
+});
+
+document.querySelectorAll("[data-close], [data-photo-close]").forEach((element) => {
+  element.addEventListener("click", closeModal);
+});
+
+document.querySelectorAll("[data-photo]").forEach((photo) => {
+  photo.addEventListener("click", () => {
+    openPhotoModal(Number(photo.dataset.photo));
+  });
+});
+
+document.querySelectorAll("[data-story]").forEach((item) => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll("[data-story]").forEach((node) => node.classList.remove("is-active"));
+    item.classList.add("is-active");
+    updateTimeline(Number(item.dataset.story));
+    burst(window.innerWidth * 0.66, window.innerHeight * 0.46);
+  });
+});
+
+document.querySelector("#wishButton").addEventListener("click", () => {
+  const current = wishCard.textContent.trim();
+  const nextWishes = wishes.filter((wish) => wish !== current);
+  wishCard.textContent = nextWishes[Math.floor(Math.random() * nextWishes.length)];
+  burst(window.innerWidth * 0.72, window.innerHeight * 0.5);
+});
+
+document.querySelector("#surpriseButton").addEventListener("click", () => {
+  showScreenFireworks({ duration: 1400, shells: 12 });
+  showToast("开场灯光已点亮：今天所有好事都优先派送给她。");
+});
+
+starSky.addEventListener("click", (event) => {
+  const rect = starSky.getBoundingClientRect();
+  const target = event.target.closest(".star-dot");
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  if (target) {
+    starMessage.textContent = target.dataset.wish;
+  } else {
+    addUserStar(x, y);
+    starMessage.textContent = "一颗新的星星被放进去了。";
+  }
+
+  burst(event.clientX, event.clientY);
+});
+
+starForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const value = starInput.value.trim();
+  if (!value) {
+    starMessage.textContent = "先写一句愿望，再送进星空。";
+    return;
+  }
+
+  starMessage.textContent = value;
+  addUserStar(90 + Math.random() * (starSky.clientWidth - 180), 90 + Math.random() * (starSky.clientHeight - 180));
+  starInput.value = "";
+  showElementFireworks(starSky, { duration: 1300, shells: 10 });
+});
+
+document.querySelectorAll("[data-gift]").forEach((gift) => {
+  gift.addEventListener("click", () => {
+    const index = Number(gift.dataset.gift);
+    openedGifts.add(index);
+    gift.classList.add("is-opened");
+    gift.querySelector(".gift-action").textContent = "已打开";
+    giftResult.textContent = gifts[index];
+    giftCount.textContent = String(openedGifts.size);
+    burst(window.innerWidth * 0.5, window.innerHeight * 0.5);
+
+    if (openedGifts.size === gifts.length) {
+      window.setTimeout(() => {
+        showToast("三份小礼物已收集，结尾烟花可以打开了。");
+      }, 400);
+    }
+  });
+});
+
+document.querySelector("#letterButton").addEventListener("click", () => {
+  if (letterHidden.hidden) {
+    letterHidden.hidden = false;
+    document.querySelector("#letterButton").textContent = "这封信已经展开";
+    showToast("信件的下一段已经打开。");
+    burst(window.innerWidth * 0.48, window.innerHeight * 0.55);
+  }
+});
+
+document.querySelector("#finalButton").addEventListener("click", () => {
+  showScreenFireworks({ duration: 1900, shells: 18 });
+  showToast("生日快乐。愿她这一岁，被生活认真偏爱。");
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeModal();
+  }
+});
+
+window.addEventListener("scroll", setHeaderState, { passive: true });
+window.addEventListener("resize", resizeCanvas);
+
+resizeCanvas();
+setHeaderState();
+animateParticles();
+
+async function restoreSavedLogin() {
+  const savedUsername = sessionStorage.getItem(PHOTO_USERNAME_SESSION_KEY);
+  const savedPassword = sessionStorage.getItem(PHOTO_PASSWORD_SESSION_KEY);
+
+  if (sessionStorage.getItem(LOGIN_SESSION_KEY) !== "1" || !savedUsername || !savedPassword) {
+    clearSavedLogin();
+    return;
+  }
+
+  try {
+    loginSubmit.disabled = true;
+    loginError.textContent = "正在恢复照片解锁状态。";
+    await unlockPhotosWithLoginCredentials(savedUsername, savedPassword);
+    loginError.textContent = "";
+    enterMuseum({ animate: false });
+  } catch (error) {
+    clearSavedLogin();
+    loginError.textContent = "登录状态已过期，请重新输入账号密码。";
+  } finally {
+    loginSubmit.disabled = false;
+  }
+}
+
+restoreSavedLogin();
+
+
+

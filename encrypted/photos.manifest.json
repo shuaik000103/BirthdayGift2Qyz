@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "algorithm": "AES-GCM",
+  "kdf": "PBKDF2-SHA-256",
+  "iterations": 150000,
+  "salt": "1wyF7VWYQCB7M0OcOtE6LQ==",
+  "check": {
+    "iv": "wRNaEp74UVnUji9i",
+    "data": "jLSlm1KbfWXeTb4lu6NfSgh83LtkuOOUlgQ4uyk4O8034rxG"
+  },
+  "files": [
+    {
+      "source": "pics/birthday-person.jpg",
+      "encrypted": "encrypted/birthday-person.jpg.bin",
+      "type": "image/jpeg",
+      "bytes": 289722
+    },
+    {
+      "source": "pics/cake.jpg",
+      "encrypted": "encrypted/cake.jpg.bin",
+      "type": "image/jpeg",
+      "bytes": 174539
+    },
+    {
+      "source": "pics/coffee-cups.jpg",
+      "encrypted": "encrypted/coffee-cups.jpg.bin",
+      "type": "image/jpeg",
+      "bytes": 98498
+    },
+    {
+      "source": "pics/coffee-friends.jpg",
+      "encrypted": "encrypted/coffee-friends.jpg.bin",
+      "type": "image/jpeg",
+      "bytes": 547491
+    },
+    {
+      "source": "pics/party.jpg",
+      "encrypted": "encrypted/party.jpg.bin",
+      "type": "image/jpeg",
+      "bytes": 146995
+    },
+    {
+      "source": "pics/portrait.jpg",
+      "encrypted": "encrypted/portrait.jpg.bin",
+      "type": "image/jpeg",
+      "bytes": 302985
+    }
+  ]
+}
