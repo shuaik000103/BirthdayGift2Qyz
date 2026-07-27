@@ -108,7 +108,7 @@ async function startGestureCamera() {
   }
 
   if (!window.isSecureContext) {
-    setGestureStatus("摄像头需要 HTTPS 或 localhost。建议运行 python -m http.server 5173 后访问 http://localhost:5173。", true);
+    setGestureStatus("摄像头需要 HTTPS。请使用 GitHub Pages 网址或自定义域名访问。", true);
     return;
   }
 
