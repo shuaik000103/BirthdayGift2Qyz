@@ -1,6 +1,4 @@
 ﻿const LOGIN_SESSION_KEY = "birthdayMuseumLoggedIn";
-const PHOTO_USERNAME_SESSION_KEY = "birthdayMuseumPhotoUsername";
-const PHOTO_PASSWORD_SESSION_KEY = "birthdayMuseumPhotoPassword";
 
 const cuteMoments = [
   {
@@ -183,45 +181,12 @@ function validateLoginInput(username, password) {
   return Boolean(username && password);
 }
 
-function buildPhotoVaultSecret(username, password) {
-  return `${username}\n${password}`;
-}
-
 function resolvePhotoUrl(source) {
-  return window.birthdayPhotoVault?.getPhotoUrl(source) || source;
-}
-
-async function unlockPhotosWithLoginCredentials(username, password) {
-  if (!window.birthdayPhotoVault) {
-    throw new Error("photo-vault-unavailable");
-  }
-
-  const result = await window.birthdayPhotoVault.unlock(buildPhotoVaultSecret(username, password));
-  sessionStorage.setItem(PHOTO_USERNAME_SESSION_KEY, username);
-  sessionStorage.setItem(PHOTO_PASSWORD_SESSION_KEY, password);
-  return result;
+  return source;
 }
 
 function clearSavedLogin() {
   sessionStorage.removeItem(LOGIN_SESSION_KEY);
-  sessionStorage.removeItem(PHOTO_USERNAME_SESSION_KEY);
-  sessionStorage.removeItem(PHOTO_PASSWORD_SESSION_KEY);
-}
-
-function getPhotoUnlockErrorMessage(error) {
-  if (error?.message === "photo-vault-invalid-password") {
-    return "账号或密码不正确，照片没有解锁。";
-  }
-
-  if (error?.message === "photo-vault-crypto-unavailable") {
-    return "当前浏览器不支持照片解密，请换新版 Chrome 或 Edge。";
-  }
-
-  if (String(error?.message || "").startsWith("photo-vault-fetch-failed")) {
-    return "没有找到加密照片文件，请先运行加密脚本。";
-  }
-
-  return "照片解锁失败，请检查密码或加密文件。";
 }
 
 function closeModal() {
@@ -643,7 +608,7 @@ window.birthdayMuseum = {
   showToast
 };
 
-loginForm.addEventListener("submit", async (event) => {
+loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const data = new FormData(loginForm);
   const username = String(data.get("username") || "").trim();
@@ -654,18 +619,8 @@ loginForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  try {
-    loginSubmit.disabled = true;
-    loginError.textContent = "正在解锁照片，请稍等。";
-    await unlockPhotosWithLoginCredentials(username, password);
-    loginError.textContent = "";
-    enterMuseum();
-  } catch (error) {
-    clearSavedLogin();
-    loginError.textContent = getPhotoUnlockErrorMessage(error);
-  } finally {
-    loginSubmit.disabled = false;
-  }
+  loginError.textContent = "";
+  enterMuseum();
 });
 document.querySelectorAll("[data-close], [data-photo-close]").forEach((element) => {
   element.addEventListener("click", closeModal);
@@ -791,27 +746,14 @@ resizeCanvas();
 setHeaderState();
 animateParticles();
 
-async function restoreSavedLogin() {
-  const savedUsername = sessionStorage.getItem(PHOTO_USERNAME_SESSION_KEY);
-  const savedPassword = sessionStorage.getItem(PHOTO_PASSWORD_SESSION_KEY);
-
-  if (sessionStorage.getItem(LOGIN_SESSION_KEY) !== "1" || !savedUsername || !savedPassword) {
+function restoreSavedLogin() {
+  if (sessionStorage.getItem(LOGIN_SESSION_KEY) !== "1") {
     clearSavedLogin();
     return;
   }
 
-  try {
-    loginSubmit.disabled = true;
-    loginError.textContent = "正在恢复照片解锁状态。";
-    await unlockPhotosWithLoginCredentials(savedUsername, savedPassword);
-    loginError.textContent = "";
-    enterMuseum({ animate: false });
-  } catch (error) {
-    clearSavedLogin();
-    loginError.textContent = "登录状态已过期，请重新输入账号密码。";
-  } finally {
-    loginSubmit.disabled = false;
-  }
+  loginError.textContent = "";
+  enterMuseum({ animate: false });
 }
 
 restoreSavedLogin();

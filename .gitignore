@@ -1,6 +1,2 @@
-# Keep private original photos local.
-pics/*
-!pics/README.md
-
 # Local QA artifacts.
 qa/

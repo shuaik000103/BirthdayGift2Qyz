@@ -31,7 +31,7 @@
 
         <p class="login-error" id="loginError" aria-live="polite"></p>
         <button class="button primary login-submit" type="submit">进入生日博物馆</button>
-        <p class="login-hint">账号密码通过后，页面会同时解锁加密照片。</p>
+        <p class="login-hint">账号密码通过后，页面会直接加载照片。</p>
       </form>
     </section>
 
@@ -107,22 +107,22 @@
                   <span>Happy Birthday!</span>
                 </div>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="0">
-                  <img src="assets/photo-placeholder.svg" data-secure-photo="pics/birthday-person.jpg" alt="生日人像照片" />
+                  <img src="pics/birthday-person.jpg" alt="生日人像照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="1">
-                  <img src="assets/photo-placeholder.svg" data-secure-photo="pics/cake.jpg" alt="生日蛋糕照片" />
+                  <img src="pics/cake.jpg" alt="生日蛋糕照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="2">
-                  <img src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="生日派对照片" />
+                  <img src="pics/party.jpg" alt="生日派对照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="3">
-                  <img src="assets/photo-placeholder.svg" data-secure-photo="pics/coffee-friends.jpg" alt="朋友聚会照片" />
+                  <img src="pics/coffee-friends.jpg" alt="朋友聚会照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="4">
-                  <img src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="微笑人像照片" />
+                  <img src="pics/portrait.jpg" alt="微笑人像照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="5">
-                  <img src="assets/photo-placeholder.svg" data-secure-photo="pics/coffee-cups.jpg" alt="咖啡约定照片" />
+                  <img src="pics/coffee-cups.jpg" alt="咖啡约定照片" />
                 </button>
               </div>
 
@@ -163,7 +163,7 @@
               </button>
             </div>
             <article class="timeline-preview" id="timelinePreview">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="时间线故事占位图" />
+              <img src="pics/party.jpg" alt="时间线故事照片" />
               <div>
                 <p id="timelineYear">2021</p>
                 <h3 id="timelineStoryTitle">第一次被记住的瞬间</h3>
@@ -218,7 +218,7 @@
                 <strong>请选择一个可爱瞬间</strong>
                 <p>照片会在点击后打开，不会在滚动到这里时直接显示。</p>
               </div>
-              <img class="cute-moment-image" id="cuteMomentImage" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" hidden />
+              <img class="cute-moment-image" id="cuteMomentImage" src="pics/portrait.jpg" alt="" hidden />
               <div class="cute-screen-caption" id="cuteCaption" hidden>
                 <p id="cuteMomentCode">瞬间 01</p>
                 <h3 id="cuteMomentTitle">突然认真</h3>
@@ -235,19 +235,19 @@
           </div>
           <div class="polaroid-grid" aria-label="可点击照片">
             <button class="polaroid tilt-left" type="button" data-photo="0">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/birthday-person.jpg" alt="生日人像占位图" />
+              <img src="pics/birthday-person.jpg" alt="生日人像照片" />
               <span>今天是她的主场。</span>
             </button>
             <button class="polaroid" type="button" data-photo="1">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/cake.jpg" alt="生日蛋糕占位图" />
+              <img src="pics/cake.jpg" alt="生日蛋糕照片" />
               <span>愿望藏在烛光里。</span>
             </button>
             <button class="polaroid tilt-right" type="button" data-photo="2">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="生日派对占位图" />
+              <img src="pics/party.jpg" alt="生日派对照片" />
               <span>每次热闹都值得留下。</span>
             </button>
             <button class="polaroid tilt-left" type="button" data-photo="3">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/coffee-friends.jpg" alt="朋友聚会占位图" />
+              <img src="pics/coffee-friends.jpg" alt="朋友聚会照片" />
               <span>下次见面继续补给快乐。</span>
             </button>
           </div>
@@ -264,7 +264,7 @@
               <button class="button primary dark" id="wishButton" type="button">换一张祝福</button>
             </div>
             <div class="wish-stack">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/cake.jpg" alt="带蜡烛的生日蛋糕占位图" />
+              <img src="pics/cake.jpg" alt="带蜡烛的生日蛋糕照片" />
               <div class="wish-card" id="wishCard" aria-live="polite">
                 愿你新的一岁，继续被喜欢的事情围绕，也被温柔的人认真对待。
               </div>
@@ -341,8 +341,8 @@
               </p>
             </div>
             <div class="letter-photos" aria-label="信件照片占位">
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="生日派对占位图" />
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/coffee-friends.jpg" alt="朋友聚会占位图" />
+              <img src="pics/party.jpg" alt="生日派对照片" />
+              <img src="pics/coffee-friends.jpg" alt="朋友聚会照片" />
             </div>
             <button class="button seal" id="letterButton" type="button">继续读下去</button>
           </div>
@@ -358,9 +358,9 @@
           </div>
           <div class="certificate-stage" aria-label="生日证书预览">
             <article class="birthday-certificate" id="birthdayCertificate">
-              <img class="certificate-sticker sticker-left" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" />
-              <img class="certificate-sticker sticker-right" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" />
-              <img class="certificate-sticker sticker-bottom" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" />
+              <img class="certificate-sticker sticker-left" src="pics/portrait.jpg" alt="" />
+              <img class="certificate-sticker sticker-right" src="pics/portrait.jpg" alt="" />
+              <img class="certificate-sticker sticker-bottom" src="pics/portrait.jpg" alt="" />
               <div class="certificate-inner">
                 <div class="certificate-head">
                   <p class="certificate-no">NO. 20260701 · 今日主角认证</p>
@@ -393,11 +393,11 @@
                   <div class="certificate-gallery" aria-label="证书照片与祝福">
                     <div class="certificate-photo-row">
                       <figure class="certificate-photo-frame">
-                        <img src="assets/photo-placeholder.svg" data-secure-photo="pics/birthday-person.jpg" alt="证书照片一" />
+                        <img src="pics/birthday-person.jpg" alt="证书照片一" />
                         <figcaption>今日主场</figcaption>
                       </figure>
                       <figure class="certificate-photo-frame">
-                        <img src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="证书照片二" />
+                        <img src="pics/party.jpg" alt="证书照片二" />
                         <figcaption>快乐存档</figcaption>
                       </figure>
                     </div>
@@ -431,14 +431,13 @@
       <div class="modal-backdrop" data-photo-close></div>
       <section class="photo-modal-card" role="dialog" aria-modal="true" aria-labelledby="photoCaption">
         <button class="modal-close" type="button" data-photo-close aria-label="关闭">×</button>
-        <img id="photoModalImage" src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="" />
+        <img id="photoModalImage" src="pics/party.jpg" alt="" />
         <p id="photoCaption"></p>
       </section>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script src="photo-vault.js"></script>
     <script src="script.js"></script>
     <script type="module" src="gesture.js"></script>
   </body>
