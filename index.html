@@ -48,6 +48,7 @@
           <a href="#stars">星愿</a>
           <a href="#gifts">礼物</a>
           <a href="#letter">信件</a>
+          <a href="#certificate">证书</a>
         </nav>
       </header>
 
@@ -133,40 +134,6 @@
           </div>
         </section>
 
-        <section class="intro-band page-section" id="opening" aria-label="生日序章">
-          <div class="intro-copy">
-            <p class="section-kicker">Opening</p>
-            <h2>今天的主角，值得被认真收藏。</h2>
-            <p>
-              灯光已经亮起，展柜已经打开。接下来每一页都藏着一句话、一张照片、一个小互动，慢慢往下看就好。
-            </p>
-          </div>
-          <div class="intro-visual">
-            <div class="photo-wall" aria-label="生日照片墙">
-              <img class="photo-main" src="assets/photo-placeholder.svg" data-secure-photo="pics/birthday-person.jpg" alt="拿着生日蛋糕的人像占位图" />
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/cake.jpg" alt="生日蛋糕占位图" />
-              <img src="assets/photo-placeholder.svg" data-secure-photo="pics/coffee-cups.jpg" alt="咖啡约定占位图" />
-            </div>
-            <div class="mini-tickets" aria-label="展览信息">
-              <article>
-                <span>01</span>
-                <strong>回忆展品</strong>
-                <p>照片、瞬间、名场面</p>
-              </article>
-              <article>
-                <span>02</span>
-                <strong>生日祝福</strong>
-                <p>温柔、搞笑、认真都能放</p>
-              </article>
-              <article>
-                <span>03</span>
-                <strong>隐藏彩蛋</strong>
-                <p>收集完礼物后打开</p>
-              </article>
-            </div>
-          </div>
-        </section>
-
         <section class="timeline-section page-section" id="timeline" aria-labelledby="timeline-title">
           <div class="section-heading split-heading">
             <div>
@@ -178,19 +145,19 @@
 
           <div class="timeline-layout">
             <div class="timeline-list" role="list" aria-label="回忆时间线">
-              <button class="timeline-item is-active" type="button" data-story="0">
+              <button class="timeline-item is-active" type="button" data-story="0" aria-pressed="true">
                 <span>2021</span>
                 <strong>第一次被记住的瞬间</strong>
               </button>
-              <button class="timeline-item" type="button" data-story="1">
+              <button class="timeline-item" type="button" data-story="1" aria-pressed="false">
                 <span>2022</span>
                 <strong>一起笑到停不下来</strong>
               </button>
-              <button class="timeline-item" type="button" data-story="2">
+              <button class="timeline-item" type="button" data-story="2" aria-pressed="false">
                 <span>2023</span>
                 <strong>把普通日子过成纪念日</strong>
               </button>
-              <button class="timeline-item" type="button" data-story="3">
+              <button class="timeline-item" type="button" data-story="3" aria-pressed="false">
                 <span>2026</span>
                 <strong>今天，把祝福郑重送达</strong>
               </button>
@@ -214,30 +181,50 @@
               <p>Memory Collection</p>
               <h2 id="collection-title">今日展区</h2>
             </div>
-            <p class="section-note">每个展区都可以点击打开。</p>
+            <p class="section-note">这里只保留一个可爱瞬间馆。照片不会随滚动直接出现，需要亲手点亮。</p>
           </div>
 
-          <div class="gallery-grid">
-            <button class="exhibit-card large photo-birthday" type="button" data-exhibit="0" data-secure-bg="pics/birthday-person.jpg">
-              <span class="card-number">A-01</span>
-              <span class="card-title">可爱瞬间馆</span>
-              <span class="card-copy">那些不经意但会让人想笑的时刻。</span>
-            </button>
-            <button class="exhibit-card photo-portrait" type="button" data-exhibit="1" data-secure-bg="pics/portrait.jpg">
-              <span class="card-number">A-02</span>
-              <span class="card-title">金句收藏柜</span>
-              <span class="card-copy">把她说过的有趣话认真存档。</span>
-            </button>
-            <button class="exhibit-card warm photo-party" type="button" data-exhibit="2" data-secure-bg="pics/party.jpg">
-              <span class="card-number">A-03</span>
-              <span class="card-title">高光放映室</span>
-              <span class="card-copy">她值得被看见的闪光时刻。</span>
-            </button>
-            <button class="exhibit-card cool photo-friends" type="button" data-exhibit="3" data-secure-bg="pics/coffee-friends.jpg">
-              <span class="card-number">A-04</span>
-              <span class="card-title">友情补给站</span>
-              <span class="card-copy">一些可以随时兑换的小承诺。</span>
-            </button>
+          <div class="cute-cinema" id="cuteCinema">
+            <div class="cute-cinema-copy">
+              <span class="cinema-ticket">A-01</span>
+              <h3>可爱瞬间馆</h3>
+              <p>像一间小小放映厅：先选左边的瞬间，再让照片和那句话慢慢亮起来。</p>
+              <div class="cute-moment-list" role="list" aria-label="可爱瞬间列表">
+                <button class="cute-moment-button" type="button" data-cute-moment="0" aria-pressed="false">
+                  <span>瞬间 01</span>
+                  <strong>突然认真</strong>
+                  <small>适合放一张很乖、很专注的照片。</small>
+                </button>
+                <button class="cute-moment-button" type="button" data-cute-moment="1" aria-pressed="false">
+                  <span>瞬间 02</span>
+                  <strong>笑到失控</strong>
+                  <small>把那种藏不住的开心收进来。</small>
+                </button>
+                <button class="cute-moment-button" type="button" data-cute-moment="2" aria-pressed="false">
+                  <span>瞬间 03</span>
+                  <strong>今日限定</strong>
+                  <small>生日当天最值得偏爱的画面。</small>
+                </button>
+                <button class="cute-moment-button" type="button" data-cute-moment="3" aria-pressed="false">
+                  <span>瞬间 04</span>
+                  <strong>可爱存档</strong>
+                  <small>以后想起来也会嘴角上扬。</small>
+                </button>
+              </div>
+            </div>
+            <article class="cute-screen is-empty" id="cuteScreen" aria-live="polite">
+              <div class="cute-screen-placeholder" id="cutePlaceholder">
+                <span></span>
+                <strong>请选择一个可爱瞬间</strong>
+                <p>照片会在点击后打开，不会在滚动到这里时直接显示。</p>
+              </div>
+              <img class="cute-moment-image" id="cuteMomentImage" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" hidden />
+              <div class="cute-screen-caption" id="cuteCaption" hidden>
+                <p id="cuteMomentCode">瞬间 01</p>
+                <h3 id="cuteMomentTitle">突然认真</h3>
+                <p id="cuteMomentText">适合放一张很乖、很专注的照片。</p>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -361,33 +348,83 @@
           </div>
         </section>
 
-        <section class="ending-section page-section" id="ending" aria-labelledby="ending-title">
-          <div class="ending-orbit" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="ending-content">
-            <p class="section-kicker">Ending</p>
-            <h2 id="ending-title">Happy Birthday</h2>
+        <section class="certificate-section page-section" id="certificate" aria-labelledby="certificate-title">
+          <div class="certificate-copy">
+            <h2 id="certificate-title">生日证书</h2>
             <p>
-              等真正的照片和文字替换进来，这里就会变成一份完整的、可以发给她打开的生日网页。
+              电脑端改成横版大证书：保留通行证编号、今日主角印章和漂浮贴纸，中间加入照片裱框与祝福词，整体更适合横屏展示。
             </p>
-            <button class="button primary" id="finalButton" type="button">放一场生日烟花</button>
+            <button class="button primary certificate-button" id="certificateButton" type="button">点亮证书</button>
+          </div>
+          <div class="certificate-stage" aria-label="生日证书预览">
+            <article class="birthday-certificate" id="birthdayCertificate">
+              <img class="certificate-sticker sticker-left" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" />
+              <img class="certificate-sticker sticker-right" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" />
+              <img class="certificate-sticker sticker-bottom" src="assets/photo-placeholder.svg" data-secure-photo="pics/portrait.jpg" alt="" />
+              <div class="certificate-inner">
+                <div class="certificate-head">
+                  <p class="certificate-no">NO. 20260701 · 今日主角认证</p>
+                  <div>
+                    <h3>生日专属通行证</h3>
+                    <p class="certificate-subtitle">SPECIAL BIRTHDAY PASSPORT</p>
+                  </div>
+                </div>
+
+                <div class="certificate-main">
+                  <div class="certificate-identity">
+                    <div class="certificate-holder">
+                      <span>持证人</span>
+                      <strong>曲艺珍</strong>
+                    </div>
+                    <p class="certificate-body">经生日惊喜委员会审核，确认持证人已完成生日祝福收集、快乐优先登记与愿望封存流程。</p>
+                    <p class="certificate-priority">即日起正式获得：今日最高优先级、快乐优先接收权、愿望优先记录权。</p>
+                    <div class="certificate-fields" aria-label="证书信息">
+                      <div>
+                        <span>签发日期</span>
+                        <strong>2026.08.02</strong>
+                      </div>
+                      <div>
+                        <span>有效期</span>
+                        <strong>无限期</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="certificate-gallery" aria-label="证书照片与祝福">
+                    <div class="certificate-photo-row">
+                      <figure class="certificate-photo-frame">
+                        <img src="assets/photo-placeholder.svg" data-secure-photo="pics/birthday-person.jpg" alt="证书照片一" />
+                        <figcaption>今日主场</figcaption>
+                      </figure>
+                      <figure class="certificate-photo-frame">
+                        <img src="assets/photo-placeholder.svg" data-secure-photo="pics/party.jpg" alt="证书照片二" />
+                        <figcaption>快乐存档</figcaption>
+                      </figure>
+                    </div>
+                    <div class="certificate-wishes">
+                      <strong>专属祝福权益</strong>
+                      <p>愿你新的一岁，被很多具体的小幸运包围：好天气、好消息、热乎的饭、想见的人，还有一切刚刚好的开心。</p>
+                      <ul>
+                        <li>烦恼延迟到期，快乐立即生效。</li>
+                        <li>愿望优先排队，好运自动续费。</li>
+                        <li>今天和以后，都有人认真记得你。</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="certificate-footer">
+                  <div class="certificate-seal">
+                    <span>今日</span>
+                    <span>主角</span>
+                  </div>
+                  <p><span>凭此证书可长期兑换</span>认真被祝福、快乐被偏爱、所有重要瞬间都被记住</p>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
       </main>
-    </div>
-
-    <div class="modal" id="exhibitModal" aria-hidden="true">
-      <div class="modal-backdrop" data-close></div>
-      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <button class="modal-close" type="button" data-close aria-label="关闭">×</button>
-        <img class="modal-image" id="modalImage" src="assets/photo-placeholder.svg" data-secure-photo="pics/birthday-person.jpg" alt="" />
-        <p class="modal-code" id="modalCode">A-01</p>
-        <h2 id="modalTitle">可爱瞬间馆</h2>
-        <p id="modalText"></p>
-      </section>
     </div>
 
     <div class="modal" id="photoModal" aria-hidden="true">

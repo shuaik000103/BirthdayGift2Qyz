@@ -2,34 +2,34 @@
 const PHOTO_USERNAME_SESSION_KEY = "birthdayMuseumPhotoUsername";
 const PHOTO_PASSWORD_SESSION_KEY = "birthdayMuseumPhotoPassword";
 
-const exhibits = [
+const cuteMoments = [
   {
-    code: "A-01",
-    title: "可爱瞬间馆",
-    image: "pics/birthday-person.jpg",
-    alt: "拿着生日蛋糕的人像占位图",
-    text: "那些一想到就会笑出来的小瞬间，都应该被好好保存。以后这里可以换成她的照片，再配一句只有你们懂的话。"
-  },
-  {
-    code: "A-02",
-    title: "金句收藏柜",
+    code: "瞬间 01",
+    title: "突然认真",
     image: "pics/portrait.jpg",
-    alt: "微笑人像占位图",
-    text: "她说过的口头禅、聊天里的名场面、突然冒出来的可爱发言，都可以被认真收进这个柜子里。"
+    alt: "可爱瞬间照片",
+    text: "适合放一张很乖、很专注的照片，像是世界突然安静地偏向她。"
   },
   {
-    code: "A-03",
-    title: "高光放映室",
+    code: "瞬间 02",
+    title: "笑到失控",
     image: "pics/party.jpg",
-    alt: "生日派对占位图",
-    text: "生日祝福不一定只说快乐，也可以认真告诉她：你看见了她的努力、勇敢和那些闪光的时刻。"
+    alt: "开心大笑的可爱瞬间照片",
+    text: "把那种藏不住的开心收进来，以后每次点开都能重新被逗笑。"
   },
   {
-    code: "A-04",
-    title: "友情补给站",
-    image: "pics/coffee-friends.jpg",
-    alt: "朋友聚会占位图",
-    text: "这里可以放一些可兑换的小承诺：一顿饭、一杯奶茶、一次陪逛，或者一次随叫随到的情绪补给。"
+    code: "瞬间 03",
+    title: "今日限定",
+    image: "pics/birthday-person.jpg",
+    alt: "生日当天的可爱瞬间照片",
+    text: "今天她拥有最高优先级，连普通画面都要被认真收藏。"
+  },
+  {
+    code: "瞬间 04",
+    title: "可爱存档",
+    image: "pics/coffee-cups.jpg",
+    alt: "日常可爱瞬间照片",
+    text: "不需要很隆重，只要她出现在画面里，这一格就已经值得保存。"
   }
 ];
 
@@ -113,11 +113,6 @@ const loginForm = document.querySelector("#loginForm");
 const loginError = document.querySelector("#loginError");
 const loginSubmit = loginForm.querySelector(".login-submit");
 const siteShell = document.querySelector("#siteShell");
-const modal = document.querySelector("#exhibitModal");
-const modalCode = document.querySelector("#modalCode");
-const modalImage = document.querySelector("#modalImage");
-const modalTitle = document.querySelector("#modalTitle");
-const modalText = document.querySelector("#modalText");
 const photoModal = document.querySelector("#photoModal");
 const photoModalImage = document.querySelector("#photoModalImage");
 const photoCaption = document.querySelector("#photoCaption");
@@ -130,6 +125,12 @@ const timelinePreviewImage = document.querySelector("#timelinePreview img");
 const timelineYear = document.querySelector("#timelineYear");
 const timelineStoryTitle = document.querySelector("#timelineStoryTitle");
 const timelineStoryText = document.querySelector("#timelineStoryText");
+const cuteScreen = document.querySelector("#cuteScreen");
+const cuteMomentImage = document.querySelector("#cuteMomentImage");
+const cuteCaption = document.querySelector("#cuteCaption");
+const cuteMomentCode = document.querySelector("#cuteMomentCode");
+const cuteMomentTitle = document.querySelector("#cuteMomentTitle");
+const cuteMomentText = document.querySelector("#cuteMomentText");
 const starSky = document.querySelector("#starSky");
 const starForm = document.querySelector("#starForm");
 const starInput = document.querySelector("#starInput");
@@ -137,6 +138,8 @@ const starMessage = document.querySelector("#starMessage");
 const giftCount = document.querySelector("#giftCount");
 const giftResult = document.querySelector("#giftResult");
 const letterHidden = document.querySelector("#letterHidden");
+const certificateButton = document.querySelector("#certificateButton");
+const birthdayCertificate = document.querySelector("#birthdayCertificate");
 
 let toastTimer;
 let particles = [];
@@ -221,21 +224,7 @@ function getPhotoUnlockErrorMessage(error) {
   return "照片解锁失败，请检查密码或加密文件。";
 }
 
-function openModal(index) {
-  const exhibit = exhibits[index];
-  modalCode.textContent = exhibit.code;
-  modalImage.src = resolvePhotoUrl(exhibit.image);
-  modalImage.alt = exhibit.alt;
-  modalTitle.textContent = exhibit.title;
-  modalText.textContent = exhibit.text;
-  modal.classList.add("is-open");
-  modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("modal-open");
-}
-
 function closeModal() {
-  modal.classList.remove("is-open");
-  modal.setAttribute("aria-hidden", "true");
   photoModal.classList.remove("is-open");
   photoModal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("modal-open");
@@ -625,6 +614,19 @@ function updateTimeline(index) {
   timelineStoryText.textContent = story.text;
 }
 
+function updateCuteMoment(index) {
+  const moment = cuteMoments[index];
+  cuteMomentImage.dataset.securePhoto = moment.image;
+  cuteMomentImage.src = resolvePhotoUrl(moment.image);
+  cuteMomentImage.alt = moment.alt;
+  cuteMomentCode.textContent = moment.code;
+  cuteMomentTitle.textContent = moment.title;
+  cuteMomentText.textContent = moment.text;
+  cuteMomentImage.hidden = false;
+  cuteCaption.hidden = false;
+  cuteScreen.classList.remove("is-empty");
+}
+
 function addUserStar(x, y) {
   const star = document.createElement("span");
   star.className = "user-star";
@@ -665,12 +667,6 @@ loginForm.addEventListener("submit", async (event) => {
     loginSubmit.disabled = false;
   }
 });
-document.querySelectorAll("[data-exhibit]").forEach((card) => {
-  card.addEventListener("click", () => {
-    openModal(Number(card.dataset.exhibit));
-  });
-});
-
 document.querySelectorAll("[data-close], [data-photo-close]").forEach((element) => {
   element.addEventListener("click", closeModal);
 });
@@ -683,10 +679,27 @@ document.querySelectorAll("[data-photo]").forEach((photo) => {
 
 document.querySelectorAll("[data-story]").forEach((item) => {
   item.addEventListener("click", () => {
-    document.querySelectorAll("[data-story]").forEach((node) => node.classList.remove("is-active"));
+    document.querySelectorAll("[data-story]").forEach((node) => {
+      node.classList.remove("is-active");
+      node.setAttribute("aria-pressed", "false");
+    });
     item.classList.add("is-active");
+    item.setAttribute("aria-pressed", "true");
     updateTimeline(Number(item.dataset.story));
     burst(window.innerWidth * 0.66, window.innerHeight * 0.46);
+  });
+});
+
+document.querySelectorAll("[data-cute-moment]").forEach((item) => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll("[data-cute-moment]").forEach((node) => {
+      node.classList.remove("is-active");
+      node.setAttribute("aria-pressed", "false");
+    });
+    item.classList.add("is-active");
+    item.setAttribute("aria-pressed", "true");
+    updateCuteMoment(Number(item.dataset.cuteMoment));
+    showElementFireworks(cuteScreen, { duration: 950, shells: 7 });
   });
 });
 
@@ -759,9 +772,10 @@ document.querySelector("#letterButton").addEventListener("click", () => {
   }
 });
 
-document.querySelector("#finalButton").addEventListener("click", () => {
+certificateButton.addEventListener("click", () => {
+  birthdayCertificate.classList.add("is-lit");
   showScreenFireworks({ duration: 1900, shells: 18 });
-  showToast("生日快乐。愿她这一岁，被生活认真偏爱。");
+  showToast("生日证书已点亮。愿她这一岁，被生活认真偏爱。");
 });
 
 document.addEventListener("keydown", (event) => {
