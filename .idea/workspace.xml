@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eae04ab9-f4df-447c-94a3-317eaaa54423" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="eae04ab9-f4df-447c-94a3-317eaaa54423" name="更改" comment="去除解密功能">
+      <change afterPath="$PROJECT_DIR$/rename_pic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/pics/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,61 +35,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0081900561799966" />
-      <entry key="MS500" value="1.6250935253988588" />
-      <entry key="S2" value="3.316184672765229" />
-      <entry key="S5" value="5.65708155794914" />
-      <entry key="S10" value="9.391860486726975" />
-      <entry key="S30" value="17.766806213532067" />
-      <entry key="S60" value="22.02870726253907" />
-      <entry key="M2" value="24.757826004865436" />
-      <entry key="M5" value="26.77216085052736" />
-      <entry key="M10" value="30.116095422906884" />
-      <entry key="M15" value="35.72183157315931" />
-      <entry key="M30" value="60.37930098914911" />
-      <entry key="H1" value="128.41204542201194" />
-      <entry key="H2" value="272.3417218339226" />
-      <entry key="H4" value="516.7704891248596" />
-      <entry key="D1" value="1359.0241726747429" />
-      <entry key="W1" value="1798.829866277696" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000036345987784" />
+      <entry key="S2" value="1.11346002275022" />
+      <entry key="S5" value="2.10642673791568" />
+      <entry key="S10" value="3.505598257573308" />
+      <entry key="S30" value="6.9455243435983025" />
+      <entry key="S60" value="14.955614086733823" />
+      <entry key="M2" value="37.20284103757542" />
+      <entry key="M5" value="91.83106831354" />
+      <entry key="M10" value="133.90341147123416" />
+      <entry key="M15" value="154.93003004968426" />
+      <entry key="M30" value="199.15714704753452" />
+      <entry key="H1" value="284.29625074022306" />
+      <entry key="H2" value="445.9914248579079" />
+      <entry key="H4" value="717.1135328570723" />
+      <entry key="D1" value="1673.6187716419968" />
+      <entry key="W1" value="2179.5419251185754" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="0.0" />
-      <entry key="S10" value="3.786064430475588E-242" />
-      <entry key="S30" value="3.3578606324132165E-81" />
-      <entry key="S60" value="5.794752479543716E-41" />
-      <entry key="M2" value="7.63408015090363E-21" />
-      <entry key="M5" value="9.827658711383652E-9" />
-      <entry key="M10" value="1.240747185961227E-4" />
-      <entry key="M15" value="0.0030394029487556262" />
-      <entry key="M30" value="0.07965218983879396" />
-      <entry key="H1" value="0.4460018461803908" />
-      <entry key="H2" value="1.1282553364009267" />
-      <entry key="H4" value="1.9090617688968583" />
-      <entry key="D1" value="3.429150959768343" />
-      <entry key="W1" value="3.908824740001688" />
+      <entry key="MS100" value="2.4294343707349637E-47" />
+      <entry key="MS500" value="4.754458208136224E-10" />
+      <entry key="S2" value="0.004669552457126697" />
+      <entry key="S5" value="0.11687189971893193" />
+      <entry key="S10" value="0.3418653239492593" />
+      <entry key="S30" value="0.6992272588026349" />
+      <entry key="S60" value="0.8361980978228992" />
+      <entry key="M2" value="0.9144386790938507" />
+      <entry key="M5" value="0.9648562630649816" />
+      <entry key="M10" value="0.983590929380027" />
+      <entry key="M15" value="1.0001996365739023" />
+      <entry key="M30" value="1.1096801761325183" />
+      <entry key="H1" value="1.4497198533825748" />
+      <entry key="H2" value="2.1628252417906166" />
+      <entry key="H4" value="3.136987070585296" />
+      <entry key="D1" value="5.203127091663902" />
+      <entry key="W1" value="5.872104423430565" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9020677271747805" />
-      <entry key="MS500" value="1.5900093420128398" />
-      <entry key="S2" value="3.301469820350831" />
-      <entry key="S5" value="5.648459169957027" />
-      <entry key="S10" value="9.385674136140318" />
-      <entry key="S30" value="17.763457335551525" />
-      <entry key="S60" value="22.02671699275932" />
-      <entry key="M2" value="24.756730888403293" />
-      <entry key="M5" value="26.77169320117891" />
-      <entry key="M10" value="30.11595843953164" />
-      <entry key="M15" value="35.724661870442134" />
-      <entry key="M30" value="60.458700306351545" />
-      <entry key="H1" value="128.8575118808588" />
-      <entry key="H2" value="273.4691899173941" />
-      <entry key="H4" value="518.6787914857172" />
-      <entry key="D1" value="1362.4530318585091" />
-      <entry key="W1" value="1802.7386376877832" />
+      <entry key="MS100" value="0.9460576467255959" />
+      <entry key="MS500" value="0.9889745185072566" />
+      <entry key="S2" value="1.1114013662556907" />
+      <entry key="S5" value="2.1438213958602494" />
+      <entry key="S10" value="3.6692251579946444" />
+      <entry key="S30" value="7.468513339661631" />
+      <entry key="S60" value="15.674451728054688" />
+      <entry key="M2" value="38.048766102303055" />
+      <entry key="M5" value="92.76516677114492" />
+      <entry key="M10" value="134.87082094688503" />
+      <entry key="M15" value="155.91919240352598" />
+      <entry key="M30" value="200.26099026604774" />
+      <entry key="H1" value="285.7426692071784" />
+      <entry key="H2" value="448.152132664558" />
+      <entry key="H4" value="720.2490703203102" />
+      <entry key="D1" value="1678.8214636839407" />
+      <entry key="W1" value="2185.4139537194233" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -102,26 +101,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.bayWindow.executor&quot;: &quot;Run&quot;,
-    &quot;Python.save_pic.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.bayWindow.executor": "Run",
+    "Python.rename_pic.executor": "Run",
+    "Python.save_pic.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
   }
-}</component>
-  <component name="RunManager" selected="Python.bayWindow">
+}]]></component>
+  <component name="RunManager" selected="Python.rename_pic">
     <configuration name="bayWindow" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BirthdayGift2" />
       <option name="ENV_FILES" value="" />
@@ -210,6 +210,30 @@
       <option name="DEBUG_JUST_MY_CODE" value="false" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rename_pic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BirthdayGift2" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/rename_pic.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -268,6 +292,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.rename_pic" />
         <item itemvalue="Python.bayWindow" />
         <item itemvalue="Python.save_pic" />
       </list>
@@ -288,9 +313,22 @@
       <option name="presentableId" value="Default" />
       <updated>1783562394841</updated>
     </task>
+    <task id="LOCAL-00001" summary="去除解密功能">
+      <option name="closed" value="true" />
+      <created>1786071253861</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1786071253861</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="去除解密功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="去除解密功能" />
   </component>
 </project>

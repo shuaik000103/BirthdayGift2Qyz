@@ -91,7 +91,7 @@ const photos = [
   }
 ];
 
-const wishes = [
+const wishTextFallbacks = [
   "愿你新的一岁，继续被喜欢的事情围绕，也被温柔的人认真对待。",
   "愿今天所有的小确幸，都排着队走向你。",
   "愿你保持可爱，也保持锋利，想要的东西都能慢慢靠近。",
@@ -99,6 +99,10 @@ const wishes = [
   "愿你吃到喜欢的蛋糕，遇到好天气，也收到很多真心。",
   "愿你疲惫时有地方休息，开心时有人认真听你分享。"
 ];
+
+const WISH_MANIFEST_URL = "wishes/manifest.json";
+const DEFAULT_WISH_BASE_PATH = "wishes/friends/";
+const WISH_GALLERY_SHAPES = new Set(["grid", "heart", "river"]);
 
 const gifts = [
   "快乐补给券已打开：凭此券可以兑换一次认真陪聊，不限时长。",
@@ -117,6 +121,16 @@ const photoCaption = document.querySelector("#photoCaption");
 const toast = document.querySelector("#toast");
 const header = document.querySelector(".site-header");
 const wishCard = document.querySelector("#wishCard");
+const wishButton = document.querySelector("#wishButton");
+const wishGalleryButton = document.querySelector("#wishGalleryButton");
+const wishGalleryPanel = document.querySelector("#wishGalleryPanel");
+const wishGalleryBoard = document.querySelector("#wishGalleryBoard");
+const wishGalleryCount = document.querySelector("#wishGalleryCount");
+const wishGalleryCloseButtons = document.querySelectorAll("[data-wish-gallery-close]");
+const wishImage = document.querySelector("#wishImage");
+const wishLoadState = document.querySelector("#wishLoadState");
+const wishPlaceholder = document.querySelector("#wishPlaceholder");
+const wishStage = document.querySelector("#wishStage");
 const canvas = document.querySelector("#sparkles");
 const ctx = canvas.getContext("2d");
 const timelinePreviewImage = document.querySelector("#timelinePreview img");
@@ -124,6 +138,7 @@ const timelineYear = document.querySelector("#timelineYear");
 const timelineStoryTitle = document.querySelector("#timelineStoryTitle");
 const timelineStoryText = document.querySelector("#timelineStoryText");
 const cuteScreen = document.querySelector("#cuteScreen");
+const cutePlaceholder = document.querySelector("#cutePlaceholder");
 const cuteMomentImage = document.querySelector("#cuteMomentImage");
 const cuteCaption = document.querySelector("#cuteCaption");
 const cuteMomentCode = document.querySelector("#cuteMomentCode");
@@ -144,6 +159,14 @@ let particles = [];
 let fireworkShells = [];
 let lastParticleFrameAt = performance.now();
 const openedGifts = new Set();
+const wishTextEntries = wishTextFallbacks.map((text, index) => ({
+  key: `text-${index}`,
+  text,
+  type: "text"
+}));
+let wishImageEntries = [];
+let currentWishEntry = null;
+let currentWishShape = "grid";
 const FIREWORK_PALETTES = [
   ["#fff7cf", "#ffd166", "#ff9f1c"],
   ["#fff0f5", "#ff5f8f", "#b84cff"],
@@ -229,6 +252,264 @@ function randomBetween(minimum, maximum) {
 
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
+}
+
+function normalizeBasePath(basePath) {
+  const safeBasePath = String(basePath || DEFAULT_WISH_BASE_PATH).replace(/^\/+/, "");
+  return safeBasePath.endsWith("/") ? safeBasePath : `${safeBasePath}/`;
+}
+
+function encodeRelativePath(path) {
+  return String(path)
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
+function normalizeWishImageEntry(entry, index, basePath) {
+  const fileName = typeof entry === "string" ? entry : entry.file || entry.src;
+
+  if (!fileName) {
+    return null;
+  }
+
+  const isAbsoluteSource = /^(https?:|data:|blob:)/i.test(fileName);
+  const image = isAbsoluteSource ? fileName : `${basePath}${encodeRelativePath(fileName)}`;
+  const displayIndex = String(index + 1).padStart(2, "0");
+
+  return {
+    alt: entry.alt || `好友生日祝福截图 ${displayIndex}`,
+    caption: entry.caption || `第 ${displayIndex} 张好友生日祝福`,
+    image,
+    key: `image-${fileName}`,
+    type: "image"
+  };
+}
+
+function updateWishLoadState(message) {
+  wishLoadState.textContent = message;
+}
+
+function applyImageFrameState(container, imageElement, aspectProperty) {
+  const width = imageElement.naturalWidth;
+  const height = imageElement.naturalHeight;
+
+  container.classList.remove("is-portrait-image", "is-wide-image", "is-long-image");
+
+  if (!width || !height) {
+    return;
+  }
+
+  const aspect = width / height;
+  container.style.setProperty(aspectProperty, aspect.toFixed(4));
+  container.classList.toggle("is-portrait-image", aspect < 0.82);
+  container.classList.toggle("is-wide-image", aspect > 1.28);
+  container.classList.toggle("is-long-image", height / width > 2.1);
+}
+
+function syncImageFrameWhenReady(container, imageElement, aspectProperty) {
+  if (imageElement.complete && imageElement.naturalWidth) {
+    applyImageFrameState(container, imageElement, aspectProperty);
+  }
+}
+
+function getWishEntries() {
+  return wishImageEntries.length ? wishImageEntries : wishTextEntries;
+}
+
+function showWishEntry(entry) {
+  currentWishEntry = entry;
+
+  if (entry.type === "image") {
+    wishStage.classList.add("has-image");
+    wishPlaceholder.hidden = true;
+    wishImage.hidden = false;
+    wishImage.src = resolvePhotoUrl(entry.image);
+    wishImage.alt = entry.alt;
+    syncImageFrameWhenReady(wishStage, wishImage, "--wish-aspect");
+    wishCard.classList.add("is-compact");
+    wishCard.textContent = entry.caption;
+    return;
+  }
+
+  wishStage.classList.remove("has-image");
+  wishStage.classList.remove("is-portrait-image", "is-wide-image", "is-long-image");
+  wishStage.style.removeProperty("--wish-aspect");
+  wishImage.hidden = true;
+  wishImage.removeAttribute("src");
+  wishImage.alt = "";
+  wishPlaceholder.hidden = false;
+  wishCard.classList.remove("is-compact");
+  wishCard.textContent = entry.text;
+}
+
+function drawWishEntry() {
+  const entries = getWishEntries();
+  const candidates =
+    entries.length > 1 && currentWishEntry
+      ? entries.filter((entry) => entry.key !== currentWishEntry.key)
+      : entries;
+  const nextWishEntry = pickRandom(candidates);
+
+  showWishEntry(nextWishEntry);
+
+  if (nextWishEntry.type === "image") {
+    showElementFireworks(wishStage, { duration: 1100, shells: 8 });
+  } else {
+    burst(window.innerWidth * 0.72, window.innerHeight * 0.5);
+  }
+}
+
+function computeHeartPositions(count) {
+  if (count <= 1) {
+    return [{ x: 50, y: 52 }];
+  }
+
+  const rawPositions = Array.from({ length: count }, (_, index) => {
+    const angleValue = (index / count) * Math.PI * 2;
+    const sinValue = Math.sin(angleValue);
+    const rawX = 16 * Math.pow(sinValue, 3);
+    const rawY = -(
+      13 * Math.cos(angleValue) -
+      5 * Math.cos(2 * angleValue) -
+      2 * Math.cos(3 * angleValue) -
+      Math.cos(4 * angleValue)
+    );
+
+    return { x: rawX, y: rawY };
+  });
+  const xValues = rawPositions.map((position) => position.x);
+  const yValues = rawPositions.map((position) => position.y);
+  const minimumX = Math.min(...xValues);
+  const maximumX = Math.max(...xValues);
+  const minimumY = Math.min(...yValues);
+  const maximumY = Math.max(...yValues);
+
+  return rawPositions.map((position) => ({
+    x: 10 + ((position.x - minimumX) / (maximumX - minimumX)) * 80,
+    y: 10 + ((position.y - minimumY) / (maximumY - minimumY)) * 78
+  }));
+}
+
+function renderWishGallery() {
+  wishGalleryBoard.className = `wish-gallery-board is-${currentWishShape}`;
+  wishGalleryBoard.innerHTML = "";
+  wishGalleryBoard.style.setProperty(
+    "--heart-item-size",
+    `${Math.max(46, Math.min(86, 420 / Math.sqrt(Math.max(wishImageEntries.length, 1))))}px`
+  );
+  wishGalleryCount.textContent = wishImageEntries.length
+    ? `${wishImageEntries.length} 张截图 · 可切换形状`
+    : "还没有读取到截图";
+
+  if (!wishImageEntries.length) {
+    const emptyState = document.createElement("p");
+    emptyState.className = "wish-gallery-empty";
+    emptyState.textContent = "把好友祝福截图放进 wishes/friends/，再更新 wishes/manifest.json，这里会自动展示。";
+    wishGalleryBoard.appendChild(emptyState);
+    return;
+  }
+
+  const heartPositions = computeHeartPositions(wishImageEntries.length);
+
+  wishImageEntries.forEach((entry, index) => {
+    const galleryItem = document.createElement("button");
+    galleryItem.className = "wish-gallery-item";
+    galleryItem.type = "button";
+    galleryItem.style.setProperty("--heart-x", `${heartPositions[index].x}%`);
+    galleryItem.style.setProperty("--heart-y", `${heartPositions[index].y}%`);
+    galleryItem.style.setProperty("--tilt", `${((index % 7) - 3) * 1.4}deg`);
+    galleryItem.style.setProperty("--river-offset", `${(index % 5) * 16}px`);
+    galleryItem.setAttribute("aria-label", entry.caption);
+
+    const image = document.createElement("img");
+    image.src = resolvePhotoUrl(entry.image);
+    image.alt = entry.alt;
+    galleryItem.appendChild(image);
+
+    galleryItem.addEventListener("click", () => {
+      showWishEntry(entry);
+      closeWishGallery();
+      wishStage.scrollIntoView({ behavior: "smooth", block: "center" });
+      showElementFireworks(wishStage, { duration: 900, shells: 6 });
+    });
+
+    wishGalleryBoard.appendChild(galleryItem);
+  });
+}
+
+function setWishGalleryShape(shape) {
+  if (!WISH_GALLERY_SHAPES.has(shape)) {
+    return;
+  }
+
+  currentWishShape = shape;
+  document.querySelectorAll("[data-wish-shape]").forEach((button) => {
+    const isSelected = button.dataset.wishShape === shape;
+    button.classList.toggle("is-active", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+  });
+  renderWishGallery();
+}
+
+function openWishGallery() {
+  wishGalleryPanel.hidden = false;
+  wishGalleryPanel.setAttribute("aria-hidden", "false");
+  document.body.classList.add("is-wish-showcase-open");
+  wishGalleryButton.textContent = "收起全部祝福";
+  renderWishGallery();
+  requestAnimationFrame(() => {
+    wishGalleryPanel.classList.add("is-open");
+  });
+}
+
+function closeWishGallery() {
+  wishGalleryPanel.classList.remove("is-open");
+  wishGalleryPanel.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("is-wish-showcase-open");
+  wishGalleryButton.textContent = "展示全部祝福";
+
+  window.setTimeout(() => {
+    if (!wishGalleryPanel.classList.contains("is-open")) {
+      wishGalleryPanel.hidden = true;
+    }
+  }, 180);
+}
+
+function toggleWishGallery() {
+  if (wishGalleryPanel.hidden) {
+    openWishGallery();
+  } else {
+    closeWishGallery();
+  }
+}
+
+async function loadWishImageManifest() {
+  try {
+    const response = await fetch(WISH_MANIFEST_URL, { cache: "no-store" });
+
+    if (!response.ok) {
+      throw new Error(`manifest status ${response.status}`);
+    }
+
+    const manifest = await response.json();
+    const basePath = normalizeBasePath(manifest.basePath);
+    const images = Array.isArray(manifest.images) ? manifest.images : [];
+    wishImageEntries = images
+      .map((entry, index) => normalizeWishImageEntry(entry, index, basePath))
+      .filter(Boolean);
+
+    updateWishLoadState(
+      wishImageEntries.length
+        ? `已加载 ${wishImageEntries.length} 张好友祝福截图。`
+        : "还没有读取到祝福截图，复制图片后更新图册清单。"
+    );
+  } catch (error) {
+    wishImageEntries = [];
+    updateWishLoadState("未读取到祝福截图清单，当前使用文字祝福备用。");
+  }
+
+  renderWishGallery();
 }
 
 function easeOutCubic(progress) {
@@ -587,7 +868,9 @@ function updateCuteMoment(index) {
   cuteMomentCode.textContent = moment.code;
   cuteMomentTitle.textContent = moment.title;
   cuteMomentText.textContent = moment.text;
+  cutePlaceholder.hidden = true;
   cuteMomentImage.hidden = false;
+  syncImageFrameWhenReady(cuteScreen, cuteMomentImage, "--cute-aspect");
   cuteCaption.hidden = false;
   cuteScreen.classList.remove("is-empty");
 }
@@ -658,11 +941,36 @@ document.querySelectorAll("[data-cute-moment]").forEach((item) => {
   });
 });
 
-document.querySelector("#wishButton").addEventListener("click", () => {
-  const current = wishCard.textContent.trim();
-  const nextWishes = wishes.filter((wish) => wish !== current);
-  wishCard.textContent = nextWishes[Math.floor(Math.random() * nextWishes.length)];
-  burst(window.innerWidth * 0.72, window.innerHeight * 0.5);
+wishButton.addEventListener("click", drawWishEntry);
+
+wishGalleryButton.addEventListener("click", toggleWishGallery);
+
+wishGalleryCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeWishGallery);
+});
+
+document.querySelectorAll("[data-wish-shape]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setWishGalleryShape(button.dataset.wishShape);
+  });
+});
+
+wishImage.addEventListener("load", () => {
+  applyImageFrameState(wishStage, wishImage, "--wish-aspect");
+});
+
+wishImage.addEventListener("error", () => {
+  wishStage.classList.remove("has-image");
+  wishStage.classList.remove("is-portrait-image", "is-wide-image", "is-long-image");
+  wishStage.style.removeProperty("--wish-aspect");
+  wishImage.hidden = true;
+  wishPlaceholder.hidden = false;
+  wishCard.classList.remove("is-compact");
+  wishCard.textContent = "这张祝福截图暂时没有加载成功，请检查图册清单里的文件名。";
+});
+
+cuteMomentImage.addEventListener("load", () => {
+  applyImageFrameState(cuteScreen, cuteMomentImage, "--cute-aspect");
 });
 
 document.querySelector("#surpriseButton").addEventListener("click", () => {
@@ -735,6 +1043,7 @@ certificateButton.addEventListener("click", () => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    closeWishGallery();
     closeModal();
   }
 });
@@ -745,6 +1054,7 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 setHeaderState();
 animateParticles();
+loadWishImageManifest();
 
 function restoreSavedLogin() {
   if (sessionStorage.getItem(LOGIN_SESSION_KEY) !== "1") {

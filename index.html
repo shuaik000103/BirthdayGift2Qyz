@@ -44,7 +44,9 @@
         <nav class="nav-links" aria-label="页面导航">
           <a href="#gesture">手势舞台</a>
           <a href="#timeline">时间线</a>
+          <a href="#collection">展区</a>
           <a href="#album">相册</a>
+          <a href="#wishes">祝福</a>
           <a href="#stars">星愿</a>
           <a href="#gifts">礼物</a>
           <a href="#letter">信件</a>
@@ -176,47 +178,57 @@
         </section>
 
         <section class="collection-section page-section" id="collection" aria-labelledby="collection-title">
-          <div class="section-heading split-heading">
-            <div>
-              <p>Memory Collection</p>
-              <h2 id="collection-title">今日展区</h2>
-            </div>
-            <p class="section-note">这里只保留一个可爱瞬间馆。照片不会随滚动直接出现，需要亲手点亮。</p>
+          <div class="collection-title-ribbon">
+            <span aria-hidden="true">✦</span>
+            <h2 id="collection-title">今日展区</h2>
+            <span aria-hidden="true">✦</span>
           </div>
 
           <div class="cute-cinema" id="cuteCinema">
             <div class="cute-cinema-copy">
-              <span class="cinema-ticket">A-01</span>
-              <h3>可爱瞬间馆</h3>
-              <p>像一间小小放映厅：先选左边的瞬间，再让照片和那句话慢慢亮起来。</p>
+              <div class="cute-title-row">
+                <span class="camera-badge" aria-hidden="true"></span>
+                <div>
+                  <h3>可爱瞬间馆 <span>♡</span></h3>
+                  <p>点击时间胶片，解锁一份可爱回忆</p>
+                </div>
+              </div>
               <div class="cute-moment-list" role="list" aria-label="可爱瞬间列表">
                 <button class="cute-moment-button" type="button" data-cute-moment="0" aria-pressed="false">
-                  <span>瞬间 01</span>
-                  <strong>突然认真</strong>
-                  <small>适合放一张很乖、很专注的照片。</small>
+                  <span class="film-icon" aria-hidden="true"><i></i></span>
+                  <strong>瞬间 01</strong>
+                  <small>突然认真</small>
+                  <span class="moment-lock" aria-hidden="true"></span>
                 </button>
                 <button class="cute-moment-button" type="button" data-cute-moment="1" aria-pressed="false">
-                  <span>瞬间 02</span>
-                  <strong>笑到失控</strong>
-                  <small>把那种藏不住的开心收进来。</small>
+                  <span class="film-icon" aria-hidden="true"><i></i></span>
+                  <strong>瞬间 02</strong>
+                  <small>笑到失控</small>
+                  <span class="moment-lock" aria-hidden="true"></span>
                 </button>
                 <button class="cute-moment-button" type="button" data-cute-moment="2" aria-pressed="false">
-                  <span>瞬间 03</span>
-                  <strong>今日限定</strong>
-                  <small>生日当天最值得偏爱的画面。</small>
+                  <span class="film-icon" aria-hidden="true"><i></i></span>
+                  <strong>瞬间 03</strong>
+                  <small>今日限定</small>
+                  <span class="moment-lock" aria-hidden="true"></span>
                 </button>
                 <button class="cute-moment-button" type="button" data-cute-moment="3" aria-pressed="false">
-                  <span>瞬间 04</span>
-                  <strong>可爱存档</strong>
-                  <small>以后想起来也会嘴角上扬。</small>
+                  <span class="film-icon" aria-hidden="true"><i></i></span>
+                  <strong>瞬间 04</strong>
+                  <small>可爱存档</small>
+                  <span class="moment-lock" aria-hidden="true"></span>
                 </button>
               </div>
+              <p class="cute-cinema-hint">✦ 点击左侧胶片，逐一解锁可爱瞬间</p>
             </div>
             <article class="cute-screen is-empty" id="cuteScreen" aria-live="polite">
+              <span class="screen-heart" aria-hidden="true">♡</span>
+              <span class="cute-curtain curtain-left" aria-hidden="true"></span>
+              <span class="cute-curtain curtain-right" aria-hidden="true"></span>
               <div class="cute-screen-placeholder" id="cutePlaceholder">
-                <span></span>
+                <span class="placeholder-play" aria-hidden="true"></span>
                 <strong>请选择一个可爱瞬间</strong>
-                <p>照片会在点击后打开，不会在滚动到这里时直接显示。</p>
+                <p>照片会在点击后打开，像拉开一座小小剧场。</p>
               </div>
               <img class="cute-moment-image" id="cuteMomentImage" src="pics/portrait.jpg" alt="" hidden />
               <div class="cute-screen-caption" id="cuteCaption" hidden>
@@ -259,15 +271,60 @@
               <p class="section-kicker">Wish Machine</p>
               <h2 id="wishes-title">抽取一张生日祝福</h2>
               <p>
-                每按一次，都会抽出一句新的祝福。适合后面替换成你们之间更私人、更有梗的话。
+                每按一次，都会从好友祝福截图里抽出一张。横图、竖图和长条聊天截图都会完整放进祝福匣。
               </p>
-              <button class="button primary dark" id="wishButton" type="button">换一张祝福</button>
+              <div class="wish-actions">
+                <button class="button primary dark" id="wishButton" type="button">抽一张祝福</button>
+                <button class="button ghost wish-secondary" id="wishGalleryButton" type="button">展示全部祝福</button>
+              </div>
+              <p class="wish-load-state" id="wishLoadState">正在读取好友祝福图册…</p>
             </div>
-            <div class="wish-stack">
-              <img src="pics/cake.jpg" alt="带蜡烛的生日蛋糕照片" />
+            <div class="wish-stage" id="wishStage">
+              <div class="wish-preview" id="wishPreview">
+                <div class="wish-placeholder" id="wishPlaceholder">
+                  <span aria-hidden="true"></span>
+                  <strong>祝福匣已准备好</strong>
+                  <p>点击按钮，随机拆开一张好友送来的生日祝福。</p>
+                </div>
+                <img class="wish-image" id="wishImage" src="" alt="" hidden />
+              </div>
               <div class="wish-card" id="wishCard" aria-live="polite">
                 愿你新的一岁，继续被喜欢的事情围绕，也被温柔的人认真对待。
               </div>
+            </div>
+          </div>
+          <div
+            class="wish-showcase"
+            id="wishGalleryPanel"
+            role="dialog"
+            aria-modal="true"
+            aria-hidden="true"
+            aria-labelledby="wishShowcaseTitle"
+            hidden
+          >
+            <button
+              class="wish-showcase-backdrop"
+              type="button"
+              data-wish-gallery-close
+              aria-label="关闭全部祝福"
+            ></button>
+            <div class="wish-showcase-paper" role="document">
+              <span class="wish-paper-pin pin-left" aria-hidden="true"></span>
+              <span class="wish-paper-pin pin-right" aria-hidden="true"></span>
+              <div class="wish-gallery-toolbar">
+                <div>
+                  <strong id="wishShowcaseTitle">全部祝福跃然纸上</strong>
+                  <span id="wishGalleryCount">等待加载截图</span>
+                </div>
+                <div class="wish-shape-controls" role="group" aria-label="切换祝福墙形状">
+                  <button class="is-active" type="button" data-wish-shape="grid" aria-pressed="true">10×10 方格</button>
+                  <button type="button" data-wish-shape="heart" aria-pressed="false">爱心</button>
+                  <button type="button" data-wish-shape="river" aria-pressed="false">星河</button>
+                </div>
+                <button class="wish-showcase-close" type="button" data-wish-gallery-close>收起</button>
+              </div>
+              <p class="wish-showcase-note">每张截图都会保持原比例。点任意纸条，它会飞回右侧祝福匣。</p>
+              <div class="wish-gallery-board is-grid" id="wishGalleryBoard" aria-live="polite"></div>
             </div>
           </div>
         </section>
@@ -352,7 +409,7 @@
           <div class="certificate-copy">
             <h2 id="certificate-title">生日证书</h2>
             <p>
-              电脑端改成横版大证书：保留通行证编号、今日主角印章和漂浮贴纸，中间加入照片裱框与祝福词，整体更适合横屏展示。
+              这份证书把今天的偏爱郑重盖章：她是今日主角，也值得在新的一岁继续被好运和真心认真收藏。
             </p>
             <button class="button primary certificate-button" id="certificateButton" type="button">点亮证书</button>
           </div>
