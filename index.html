@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>生日博物馆</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260811-5" />
+    <link rel="stylesheet" href="gallery-refinement.css?v=20260811-2" />
   </head>
   <body class="is-locked">
     <canvas id="sparkles" aria-hidden="true"></canvas>
@@ -22,16 +23,15 @@
 
         <label class="field">
           <span>账号</span>
-          <input id="username" name="username" type="text" autocomplete="username" placeholder="请输入专属账号" />
+          <input id="username" name="username" type="text" autocomplete="username" />
         </label>
         <label class="field">
           <span>密码</span>
-          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="请输入专属密码" />
+          <input id="password" name="password" type="password" autocomplete="current-password" />
         </label>
 
         <p class="login-error" id="loginError" aria-live="polite"></p>
         <button class="button primary login-submit" type="submit">进入生日博物馆</button>
-        <p class="login-hint">账号密码通过后，页面会直接加载照片。</p>
       </form>
     </section>
 
@@ -47,9 +47,8 @@
           <a href="#collection">展区</a>
           <a href="#album">相册</a>
           <a href="#wishes">祝福</a>
-          <a href="#stars">星愿</a>
           <a href="#gifts">礼物</a>
-          <a href="#letter">信件</a>
+          <a href="#fortune">心愿舱</a>
           <a href="#certificate">证书</a>
         </nav>
       </header>
@@ -76,7 +75,6 @@
         <section class="gesture-section page-section" id="gesture" aria-labelledby="gesture-title">
           <div class="section-heading split-heading">
             <div>
-              <p>Gesture Surprise</p>
               <h2 id="gesture-title">用手势打开生日蛋糕</h2>
             </div>
             <p class="section-note">启动摄像头后：先握拳，再张开手掌展开蛋糕；张开后握拳收回；左右滑动转动照片；拇指和食指捏合放大、分开关闭。</p>
@@ -109,22 +107,22 @@
                   <span>Happy Birthday!</span>
                 </div>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="0">
-                  <img src="pics/birthday-person.jpg" alt="生日人像照片" />
+                  <img src="assets/photo-placeholder.svg" data-photo-base="pics/gesture/01" alt="生日人像照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="1">
-                  <img src="pics/cake.jpg" alt="生日蛋糕照片" />
+                  <img src="assets/photo-placeholder.svg" data-photo-base="pics/gesture/02" alt="生日蛋糕照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="2">
-                  <img src="pics/party.jpg" alt="生日派对照片" />
+                  <img src="assets/photo-placeholder.svg" data-photo-base="pics/gesture/03" alt="生日派对照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="3">
-                  <img src="pics/coffee-friends.jpg" alt="朋友聚会照片" />
+                  <img src="assets/photo-placeholder.svg" data-photo-base="pics/gesture/04" alt="朋友聚会照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="4">
-                  <img src="pics/portrait.jpg" alt="微笑人像照片" />
+                  <img src="assets/photo-placeholder.svg" data-photo-base="pics/gesture/05" alt="微笑人像照片" />
                 </button>
                 <button class="gesture-photo-card" type="button" data-gesture-photo="5">
-                  <img src="pics/coffee-cups.jpg" alt="咖啡约定照片" />
+                  <img src="assets/photo-placeholder.svg" data-photo-base="pics/gesture/06" alt="咖啡约定照片" />
                 </button>
               </div>
 
@@ -139,34 +137,26 @@
         <section class="timeline-section page-section" id="timeline" aria-labelledby="timeline-title">
           <div class="section-heading split-heading">
             <div>
-              <p>Memory Timeline</p>
               <h2 id="timeline-title">时间线放映厅</h2>
             </div>
-            <p class="section-note">点击年份，右侧展柜会切换故事。</p>
           </div>
 
           <div class="timeline-layout">
-            <div class="timeline-list" role="list" aria-label="回忆时间线">
-              <button class="timeline-item is-active" type="button" data-story="0" aria-pressed="true">
-                <span>2021</span>
-                <strong>第一次被记住的瞬间</strong>
-              </button>
-              <button class="timeline-item" type="button" data-story="1" aria-pressed="false">
-                <span>2022</span>
-                <strong>一起笑到停不下来</strong>
-              </button>
-              <button class="timeline-item" type="button" data-story="2" aria-pressed="false">
-                <span>2023</span>
-                <strong>把普通日子过成纪念日</strong>
-              </button>
-              <button class="timeline-item" type="button" data-story="3" aria-pressed="false">
-                <span>2026</span>
-                <strong>今天，把祝福郑重送达</strong>
-              </button>
-            </div>
+            <div class="timeline-list" id="timelineList" role="list" aria-label="回忆时间线"></div>
             <article class="timeline-preview" id="timelinePreview">
-              <img src="pics/party.jpg" alt="时间线故事照片" />
-              <div>
+              <div class="memory-reel" id="timelineReel" data-photo-swipe="timeline">
+                <button class="reel-button reel-button-previous" id="timelinePreviousButton" type="button" aria-label="查看上一张时间线照片">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5 7 12l7.5 7.5M8 12h9" /></svg>
+                </button>
+                <figure class="memory-reel-frame">
+                  <img id="timelinePreviewImage" src="assets/photo-placeholder.svg" data-photo-base="pics/timeline/2021" alt="时间线故事照片" />
+                  <figcaption id="timelinePhotoCount">01 / 01</figcaption>
+                </figure>
+                <button class="reel-button reel-button-next" id="timelineNextButton" type="button" aria-label="查看下一张时间线照片">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 4.5 7.5 7.5-7.5 7.5M16 12H7" /></svg>
+                </button>
+              </div>
+              <div class="timeline-story-copy">
                 <p id="timelineYear">2021</p>
                 <h3 id="timelineStoryTitle">第一次被记住的瞬间</h3>
                 <p id="timelineStoryText">
@@ -190,48 +180,29 @@
                 <span class="camera-badge" aria-hidden="true"></span>
                 <div>
                   <h3>可爱瞬间馆 <span>♡</span></h3>
-                  <p>点击时间胶片，解锁一份可爱回忆</p>
                 </div>
               </div>
-              <div class="cute-moment-list" role="list" aria-label="可爱瞬间列表">
-                <button class="cute-moment-button" type="button" data-cute-moment="0" aria-pressed="false">
-                  <span class="film-icon" aria-hidden="true"><i></i></span>
-                  <strong>瞬间 01</strong>
-                  <small>突然认真</small>
-                  <span class="moment-lock" aria-hidden="true"></span>
-                </button>
-                <button class="cute-moment-button" type="button" data-cute-moment="1" aria-pressed="false">
-                  <span class="film-icon" aria-hidden="true"><i></i></span>
-                  <strong>瞬间 02</strong>
-                  <small>笑到失控</small>
-                  <span class="moment-lock" aria-hidden="true"></span>
-                </button>
-                <button class="cute-moment-button" type="button" data-cute-moment="2" aria-pressed="false">
-                  <span class="film-icon" aria-hidden="true"><i></i></span>
-                  <strong>瞬间 03</strong>
-                  <small>今日限定</small>
-                  <span class="moment-lock" aria-hidden="true"></span>
-                </button>
-                <button class="cute-moment-button" type="button" data-cute-moment="3" aria-pressed="false">
-                  <span class="film-icon" aria-hidden="true"><i></i></span>
-                  <strong>瞬间 04</strong>
-                  <small>可爱存档</small>
-                  <span class="moment-lock" aria-hidden="true"></span>
-                </button>
-              </div>
-              <p class="cute-cinema-hint">✦ 点击左侧胶片，逐一解锁可爱瞬间</p>
+              <div class="cute-moment-list" id="cuteMomentList" role="list" aria-label="可爱瞬间列表"></div>
             </div>
-            <article class="cute-screen is-empty" id="cuteScreen" aria-live="polite">
+            <article class="cute-screen" id="cuteScreen" aria-live="polite">
               <span class="screen-heart" aria-hidden="true">♡</span>
               <span class="cute-curtain curtain-left" aria-hidden="true"></span>
               <span class="cute-curtain curtain-right" aria-hidden="true"></span>
-              <div class="cute-screen-placeholder" id="cutePlaceholder">
+              <div class="cute-screen-placeholder" id="cutePlaceholder" hidden>
                 <span class="placeholder-play" aria-hidden="true"></span>
-                <strong>请选择一个可爱瞬间</strong>
-                <p>照片会在点击后打开，像拉开一座小小剧场。</p>
+                <strong>可爱瞬间</strong>
               </div>
-              <img class="cute-moment-image" id="cuteMomentImage" src="pics/portrait.jpg" alt="" hidden />
-              <div class="cute-screen-caption" id="cuteCaption" hidden>
+              <div class="cute-photo-reel" id="cuteReel" data-photo-swipe="cute">
+                <button class="cute-reel-button cute-reel-button-previous" id="cutePreviousButton" type="button" aria-label="查看上一张可爱瞬间照片">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5 7 12l7.5 7.5M8 12h9" /></svg>
+                </button>
+                <span id="cutePhotoCount" aria-live="polite">01 / 01</span>
+                <button class="cute-reel-button cute-reel-button-next" id="cuteNextButton" type="button" aria-label="查看下一张可爱瞬间照片">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 4.5 7.5 7.5-7.5 7.5M16 12H7" /></svg>
+                </button>
+              </div>
+              <img class="cute-moment-image" id="cuteMomentImage" src="assets/photo-placeholder.svg" data-photo-base="pics/cute/01" alt="可爱瞬间照片" />
+              <div class="cute-screen-caption" id="cuteCaption">
                 <p id="cuteMomentCode">瞬间 01</p>
                 <h3 id="cuteMomentTitle">突然认真</h3>
                 <p id="cuteMomentText">适合放一张很乖、很专注的照片。</p>
@@ -242,24 +213,23 @@
 
         <section class="album-section page-section" id="album" aria-labelledby="album-title">
           <div class="section-heading">
-            <p>Polaroid Album</p>
             <h2 id="album-title">拍立得相册墙</h2>
           </div>
           <div class="polaroid-grid" aria-label="可点击照片">
             <button class="polaroid tilt-left" type="button" data-photo="0">
-              <img src="pics/birthday-person.jpg" alt="生日人像照片" />
+              <img src="assets/photo-placeholder.svg" data-photo-base="pics/album/01" alt="生日人像照片" />
               <span>今天是她的主场。</span>
             </button>
             <button class="polaroid" type="button" data-photo="1">
-              <img src="pics/cake.jpg" alt="生日蛋糕照片" />
+              <img src="assets/photo-placeholder.svg" data-photo-base="pics/album/02" alt="生日蛋糕照片" />
               <span>愿望藏在烛光里。</span>
             </button>
             <button class="polaroid tilt-right" type="button" data-photo="2">
-              <img src="pics/party.jpg" alt="生日派对照片" />
+              <img src="assets/photo-placeholder.svg" data-photo-base="pics/album/03" alt="生日派对照片" />
               <span>每次热闹都值得留下。</span>
             </button>
             <button class="polaroid tilt-left" type="button" data-photo="3">
-              <img src="pics/coffee-friends.jpg" alt="朋友聚会照片" />
+              <img src="assets/photo-placeholder.svg" data-photo-base="pics/album/04" alt="朋友聚会照片" />
               <span>下次见面继续补给快乐。</span>
             </button>
           </div>
@@ -268,23 +238,17 @@
         <section class="wish-section page-section" id="wishes" aria-labelledby="wishes-title">
           <div class="wish-panel">
             <div class="wish-copy">
-              <p class="section-kicker">Wish Machine</p>
               <h2 id="wishes-title">抽取一张生日祝福</h2>
-              <p>
-                每按一次，都会从好友祝福截图里抽出一张。横图、竖图和长条聊天截图都会完整放进祝福匣。
-              </p>
               <div class="wish-actions">
                 <button class="button primary dark" id="wishButton" type="button">抽一张祝福</button>
                 <button class="button ghost wish-secondary" id="wishGalleryButton" type="button">展示全部祝福</button>
               </div>
-              <p class="wish-load-state" id="wishLoadState">正在读取好友祝福图册…</p>
             </div>
             <div class="wish-stage" id="wishStage">
               <div class="wish-preview" id="wishPreview">
                 <div class="wish-placeholder" id="wishPlaceholder">
                   <span aria-hidden="true"></span>
-                  <strong>祝福匣已准备好</strong>
-                  <p>点击按钮，随机拆开一张好友送来的生日祝福。</p>
+                  <strong>生日祝福</strong>
                 </div>
                 <img class="wish-image" id="wishImage" src="" alt="" hidden />
               </div>
@@ -314,38 +278,10 @@
               <div class="wish-gallery-toolbar">
                 <div>
                   <strong id="wishShowcaseTitle">全部祝福跃然纸上</strong>
-                  <span id="wishGalleryCount">等待加载截图</span>
-                </div>
-                <div class="wish-shape-controls" role="group" aria-label="切换祝福墙形状">
-                  <button class="is-active" type="button" data-wish-shape="grid" aria-pressed="true">10×10 方格</button>
-                  <button type="button" data-wish-shape="heart" aria-pressed="false">爱心</button>
-                  <button type="button" data-wish-shape="river" aria-pressed="false">星河</button>
                 </div>
                 <button class="wish-showcase-close" type="button" data-wish-gallery-close>收起</button>
               </div>
-              <p class="wish-showcase-note">每张截图都会保持原比例。点任意纸条，它会飞回右侧祝福匣。</p>
               <div class="wish-gallery-board is-grid" id="wishGalleryBoard" aria-live="polite"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="star-section page-section" id="stars" aria-labelledby="stars-title">
-          <div class="star-panel">
-            <div class="star-copy">
-              <p class="section-kicker">Star Wish</p>
-              <h2 id="stars-title">把愿望点进星空</h2>
-              <p>点击星空会留下新的星星。写下一句愿望，它会飞进这片夜色里。</p>
-              <form class="star-form" id="starForm">
-                <input id="starInput" type="text" maxlength="24" aria-label="写下星愿" placeholder="新的一岁，要一直开心" />
-                <button class="button primary" type="submit">送进星空</button>
-              </form>
-              <p class="star-message" id="starMessage">今天第一颗星，已经替她亮起来了。</p>
-            </div>
-            <div class="star-sky" id="starSky" aria-label="可点击星空">
-              <button class="star-dot star-one" type="button" data-wish="愿她保持热爱，也被热爱回应。"></button>
-              <button class="star-dot star-two" type="button" data-wish="愿她新的一岁，拥有更多确定的快乐。"></button>
-              <button class="star-dot star-three" type="button" data-wish="愿好运总在她需要时准时出现。"></button>
-              <span class="moon" aria-hidden="true"></span>
             </div>
           </div>
         </section>
@@ -353,55 +289,75 @@
         <section class="gift-section page-section" id="gifts" aria-labelledby="gifts-title">
           <div class="section-heading split-heading">
             <div>
-              <p>Gift Room</p>
               <h2 id="gifts-title">拆开三份小礼物</h2>
             </div>
-            <p class="section-note"><span id="giftCount">0</span>/3 已打开</p>
           </div>
-          <div class="gift-grid">
-            <button class="gift-box" type="button" data-gift="0">
-              <span class="gift-ribbon"></span>
-              <strong>快乐补给券</strong>
-              <span class="gift-action">点击拆开</span>
-            </button>
-            <button class="gift-box" type="button" data-gift="1">
-              <span class="gift-ribbon"></span>
-              <strong>奶茶兑换券</strong>
-              <span class="gift-action">点击拆开</span>
-            </button>
-            <button class="gift-box" type="button" data-gift="2">
-              <span class="gift-ribbon"></span>
-              <strong>陪伴通行证</strong>
-              <span class="gift-action">点击拆开</span>
-            </button>
+          <div class="gift-experience" id="giftExperience">
+            <div class="gift-vault" aria-hidden="true">
+              <span class="gift-vault-glow"></span>
+              <span class="gift-vault-lid"></span>
+              <span class="gift-vault-box"></span>
+              <span class="gift-vault-ribbon"></span>
+              <span class="gift-vault-bow"></span>
+              <span class="gift-vault-ticket" id="giftVaultTicket">生日礼物</span>
+            </div>
+            <div class="gift-grid" aria-label="选择要拆开的礼物">
+              <button class="gift-box" type="button" data-gift="0">
+                <span class="gift-token">礼物 01</span>
+                <strong>快乐补给券</strong>
+                <span class="gift-action">拉开缎带</span>
+              </button>
+              <button class="gift-box" type="button" data-gift="1">
+                <span class="gift-token">礼物 02</span>
+                <strong>奶茶兑换券</strong>
+                <span class="gift-action">拉开缎带</span>
+              </button>
+              <button class="gift-box" type="button" data-gift="2">
+                <span class="gift-token">礼物 03</span>
+                <strong>陪伴通行证</strong>
+                <span class="gift-action">拉开缎带</span>
+              </button>
+            </div>
           </div>
           <div class="gift-result" id="giftResult" aria-live="polite">
-            第一份礼物还在蝴蝶结里，等她亲手打开。
+            快乐会在这里盖章。
           </div>
         </section>
 
-        <section class="letter-section page-section" id="letter" aria-labelledby="letter-title">
-          <div class="letter-paper">
-            <p class="section-kicker">For You</p>
-            <h2 id="letter-title">一封可以替换成真心话的生日信</h2>
-            <div class="letter-text" id="letterText">
-              <p>
-                生日快乐。希望你在新的一岁里，遇到的事情都更顺利一点，喜欢的东西都离你更近一点。
-              </p>
-              <p>
-                也希望这个页面能像一个小小的纪念盒，替我把今天的祝福郑重地递到你面前。
-              </p>
+        <section class="fortune-section page-section" id="fortune" aria-labelledby="fortune-title">
+          <div class="section-heading split-heading">
+            <div>
+              <h2 id="fortune-title">生日心愿扭蛋机</h2>
             </div>
-            <div class="letter-hidden" id="letterHidden" hidden>
-              <p>
-                你值得很多很多具体的快乐：好天气、好消息、热乎的饭、想见的人，还有一切刚刚好的幸运。
-              </p>
+          </div>
+          <div class="capsule-machine" id="fortuneBoard">
+            <div class="capsule-machine-top" aria-hidden="true">
+              <span class="machine-star star-one">✦</span>
+              <span class="machine-star star-two">✧</span>
+              <span class="machine-star star-three">♡</span>
+              <div class="capsule-globe">
+                <span class="capsule capsule-pink"></span>
+                <span class="capsule capsule-lilac"></span>
+                <span class="capsule capsule-mint"></span>
+                <span class="capsule capsule-gold"></span>
+                <span class="capsule capsule-blue"></span>
+                <span class="capsule capsule-peach"></span>
+                <span class="globe-shine"></span>
+              </div>
+              <div class="machine-neck"></div>
+              <div class="machine-base"><span>生日限定</span></div>
             </div>
-            <div class="letter-photos" aria-label="信件照片占位">
-              <img src="pics/party.jpg" alt="生日派对照片" />
-              <img src="pics/coffee-friends.jpg" alt="朋友聚会照片" />
+            <div class="capsule-machine-control">
+              <button class="capsule-lever" id="capsuleSpinButton" type="button" aria-describedby="fortuneResult">
+                <span class="lever-orb" aria-hidden="true"></span>
+                <span>转动摇杆</span>
+              </button>
+              <div class="capsule-slot" aria-hidden="true"><span></span></div>
             </div>
-            <button class="button seal" id="letterButton" type="button">继续读下去</button>
+            <div class="fortune-result" id="fortuneResult" aria-live="polite">
+              <strong>生日心愿正在装入扭蛋。</strong>
+              <span>今天的第一颗小惊喜，等你亲手转出来。</span>
+            </div>
           </div>
         </section>
 
@@ -415,12 +371,12 @@
           </div>
           <div class="certificate-stage" aria-label="生日证书预览">
             <article class="birthday-certificate" id="birthdayCertificate">
-              <img class="certificate-sticker sticker-left" src="pics/portrait.jpg" alt="" />
-              <img class="certificate-sticker sticker-right" src="pics/portrait.jpg" alt="" />
-              <img class="certificate-sticker sticker-bottom" src="pics/portrait.jpg" alt="" />
+              <img class="certificate-sticker sticker-left" src="assets/photo-placeholder.svg" data-photo-base="pics/certificate/sticker-left" alt="" />
+              <img class="certificate-sticker sticker-right" src="assets/photo-placeholder.svg" data-photo-base="pics/certificate/sticker-right" alt="" />
+              <img class="certificate-sticker sticker-bottom" src="assets/photo-placeholder.svg" data-photo-base="pics/certificate/sticker-bottom" alt="" />
               <div class="certificate-inner">
                 <div class="certificate-head">
-                  <p class="certificate-no">NO. 20260701 · 今日主角认证</p>
+                  <p class="certificate-no">NO. 0904 · 今日主角认证</p>
                   <div>
                     <h3>生日专属通行证</h3>
                     <p class="certificate-subtitle">SPECIAL BIRTHDAY PASSPORT</p>
@@ -438,7 +394,7 @@
                     <div class="certificate-fields" aria-label="证书信息">
                       <div>
                         <span>签发日期</span>
-                        <strong>2026.08.02</strong>
+                        <strong>09.04</strong>
                       </div>
                       <div>
                         <span>有效期</span>
@@ -450,11 +406,11 @@
                   <div class="certificate-gallery" aria-label="证书照片与祝福">
                     <div class="certificate-photo-row">
                       <figure class="certificate-photo-frame">
-                        <img src="pics/birthday-person.jpg" alt="证书照片一" />
+                        <img src="assets/photo-placeholder.svg" data-photo-base="pics/certificate/main-01" alt="证书照片一" />
                         <figcaption>今日主场</figcaption>
                       </figure>
                       <figure class="certificate-photo-frame">
-                        <img src="pics/party.jpg" alt="证书照片二" />
+                        <img src="assets/photo-placeholder.svg" data-photo-base="pics/certificate/main-02" alt="证书照片二" />
                         <figcaption>快乐存档</figcaption>
                       </figure>
                     </div>
@@ -488,7 +444,7 @@
       <div class="modal-backdrop" data-photo-close></div>
       <section class="photo-modal-card" role="dialog" aria-modal="true" aria-labelledby="photoCaption">
         <button class="modal-close" type="button" data-photo-close aria-label="关闭">×</button>
-        <img id="photoModalImage" src="pics/party.jpg" alt="" />
+        <img id="photoModalImage" src="assets/photo-placeholder.svg" data-photo-base="pics/album/03" alt="" />
         <p id="photoCaption"></p>
       </section>
     </div>

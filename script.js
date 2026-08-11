@@ -1,92 +1,112 @@
 ﻿const LOGIN_SESSION_KEY = "birthdayMuseumLoggedIn";
 
-const cuteMoments = [
+const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
+const resolvedPhotoSources = new Map();
+const photoSourceLookups = new Map();
+
+let cuteMoments = [
   {
     code: "瞬间 01",
     title: "突然认真",
-    image: "pics/portrait.jpg",
+    photos: ["pics/cute/01"],
     alt: "可爱瞬间照片",
     text: "适合放一张很乖、很专注的照片，像是世界突然安静地偏向她。"
   },
   {
     code: "瞬间 02",
     title: "笑到失控",
-    image: "pics/party.jpg",
+    photos: ["pics/cute/02"],
     alt: "开心大笑的可爱瞬间照片",
     text: "把那种藏不住的开心收进来，以后每次点开都能重新被逗笑。"
   },
   {
     code: "瞬间 03",
     title: "今日限定",
-    image: "pics/birthday-person.jpg",
+    photos: ["pics/cute/03"],
     alt: "生日当天的可爱瞬间照片",
     text: "今天她拥有最高优先级，连普通画面都要被认真收藏。"
-  },
-  {
-    code: "瞬间 04",
-    title: "可爱存档",
-    image: "pics/coffee-cups.jpg",
-    alt: "日常可爱瞬间照片",
-    text: "不需要很隆重，只要她出现在画面里，这一格就已经值得保存。"
   }
 ];
 
-const stories = [
+let stories = [
   {
     year: "2021",
     title: "第一次被记住的瞬间",
-    image: "pics/party.jpg",
+    photos: ["pics/timeline/2021"],
     text: "有些人出现得很自然，却会在后来变成生活里很重要的注脚。"
   },
   {
     year: "2022",
     title: "一起笑到停不下来",
-    image: "pics/coffee-friends.jpg",
+    photos: ["pics/timeline/2022"],
     text: "普通的一天，因为有人一起分享，就突然变成了很值得回看的片段。"
   },
   {
     year: "2023",
     title: "把普通日子过成纪念日",
-    image: "pics/coffee-cups.jpg",
+    photos: ["pics/timeline/2023"],
     text: "不是每个纪念日都需要隆重，有时候一杯热饮、一句玩笑，就足够被记很久。"
   },
   {
     year: "2026",
     title: "今天，把祝福郑重送达",
-    image: "pics/cake.jpg",
+    photos: ["pics/timeline/2026"],
     text: "新的一岁已经开始，愿她继续拥有明亮、具体、不会迟到的快乐。"
   }
 ];
 
-const photos = [
+const albumPhotos = [
   {
-    image: "pics/birthday-person.jpg",
+    image: "pics/album/01",
     alt: "生日人像占位图",
     caption: "今天是她的主场。"
   },
   {
-    image: "pics/cake.jpg",
+    image: "pics/album/02",
     alt: "生日蛋糕占位图",
     caption: "愿望藏在烛光里。"
   },
   {
-    image: "pics/party.jpg",
+    image: "pics/album/03",
     alt: "生日派对占位图",
     caption: "每次热闹都值得留下。"
   },
   {
-    image: "pics/coffee-friends.jpg",
+    image: "pics/album/04",
     alt: "朋友聚会占位图",
     caption: "下次见面继续补给快乐。"
+  }
+];
+
+const gesturePhotos = [
+  {
+    image: "pics/gesture/01",
+    alt: "手势舞台照片一",
+    caption: "当前照片已被手势选中。"
   },
   {
-    image: "pics/portrait.jpg",
-    alt: "微笑人像占位图",
+    image: "pics/gesture/02",
+    alt: "手势舞台照片二",
+    caption: "照片球正在替她收藏发光瞬间。"
+  },
+  {
+    image: "pics/gesture/03",
+    alt: "手势舞台照片三",
+    caption: "这一张已经被放到生日蛋糕旁边。"
+  },
+  {
+    image: "pics/gesture/04",
+    alt: "手势舞台照片四",
+    caption: "左右滑动时，快乐也跟着转起来。"
+  },
+  {
+    image: "pics/gesture/05",
+    alt: "手势舞台照片五",
     caption: "每个认真发光的瞬间都值得被看见。"
   },
   {
-    image: "pics/coffee-cups.jpg",
-    alt: "咖啡约定占位图",
+    image: "pics/gesture/06",
+    alt: "手势舞台照片六",
     caption: "把下一次见面提前写进愿望里。"
   }
 ];
@@ -102,12 +122,65 @@ const wishTextFallbacks = [
 
 const WISH_MANIFEST_URL = "wishes/manifest.json";
 const DEFAULT_WISH_BASE_PATH = "wishes/friends/";
-const WISH_GALLERY_SHAPES = new Set(["grid", "heart", "river"]);
+const TIMELINE_MANIFEST_URL = "pics/timeline/manifest.json";
+const CUTE_MANIFEST_URL = "pics/cute/manifest.json";
 
 const gifts = [
   "快乐补给券已打开：凭此券可以兑换一次认真陪聊，不限时长。",
   "奶茶兑换券已打开：下次见面，第一杯甜的由送礼人负责。",
   "陪伴通行证已打开：想出门、想吐槽、想发呆，都可以随时呼叫。"
+];
+
+const capsuleSurprises = [
+  {
+    title: "捕获异色粉耳星兔",
+    text: "生日扭蛋开出粉耳星兔异色图鉴，今天的欧气先被它抢走了。",
+    image: "pics/roco/shiny-01.jpg"
+  },
+  {
+    title: "捕获异色小皮球",
+    text: "蓝色闪耀的小皮球加入图鉴，愿这份稀有快乐也落在你手里。",
+    image: "pics/roco/shiny-02.jpg"
+  },
+  {
+    title: "捕获异色贝古斯",
+    text: "机械感的异色贝古斯出现，今天的生日收藏册又多了一页。",
+    image: "pics/roco/shiny-03.jpg"
+  },
+  {
+    title: "捕获异色月牙雪熊",
+    text: "红棕色的月牙雪熊闪耀登场，祝你今天所有愿望都能一击捕获。",
+    image: "pics/roco/shiny-04.jpg"
+  },
+  {
+    title: "捕获异色夜寐",
+    text: "异色夜寐带着粉紫色光晕抵达，这只稀有精灵专门守护今晚的好梦。",
+    image: "pics/roco/shiny-05.jpg"
+  },
+  {
+    title: "捕获异色剃灯鱼",
+    text: "金色异色剃灯鱼点亮扭蛋机，愿你这一岁也永远保持闪闪发光。",
+    image: "pics/roco/shiny-06.jpg"
+  },
+  {
+    title: "捕获异色精灵 · 曙光旅者",
+    text: "这只异色精灵带着晨光抵达，稀有的好运也一起被收进生日图鉴。",
+    image: "pics/roco/shiny-07.jpg"
+  },
+  {
+    title: "捕获异色精灵 · 夜色信使",
+    text: "夜色里闪出的特别配色，是今天扭蛋机送来的第八份小惊喜。",
+    image: "pics/roco/shiny-08.jpg"
+  },
+  ...Array.from({ length: 32 }, (_, offset) => {
+    const number = String(offset + 9).padStart(2, "0");
+
+    return {
+      title: `捕获异色图鉴卡 ${number}`,
+      text: `第 ${number} 张异色图鉴卡加入收藏。今天的稀有好运，还在继续出现。`,
+      image: `pics/roco/shiny-${number}.jpg`
+    };
+  })
 ];
 
 const loginScreen = document.querySelector("#loginScreen");
@@ -133,24 +206,33 @@ const wishPlaceholder = document.querySelector("#wishPlaceholder");
 const wishStage = document.querySelector("#wishStage");
 const canvas = document.querySelector("#sparkles");
 const ctx = canvas.getContext("2d");
-const timelinePreviewImage = document.querySelector("#timelinePreview img");
+const timelineList = document.querySelector("#timelineList");
+const timelinePreviewImage = document.querySelector("#timelinePreviewImage");
 const timelineYear = document.querySelector("#timelineYear");
 const timelineStoryTitle = document.querySelector("#timelineStoryTitle");
 const timelineStoryText = document.querySelector("#timelineStoryText");
+const timelinePhotoCount = document.querySelector("#timelinePhotoCount");
+const timelinePreviousButton = document.querySelector("#timelinePreviousButton");
+const timelineNextButton = document.querySelector("#timelineNextButton");
 const cuteScreen = document.querySelector("#cuteScreen");
+const cuteMomentList = document.querySelector("#cuteMomentList");
 const cutePlaceholder = document.querySelector("#cutePlaceholder");
 const cuteMomentImage = document.querySelector("#cuteMomentImage");
 const cuteCaption = document.querySelector("#cuteCaption");
 const cuteMomentCode = document.querySelector("#cuteMomentCode");
 const cuteMomentTitle = document.querySelector("#cuteMomentTitle");
 const cuteMomentText = document.querySelector("#cuteMomentText");
-const starSky = document.querySelector("#starSky");
-const starForm = document.querySelector("#starForm");
-const starInput = document.querySelector("#starInput");
-const starMessage = document.querySelector("#starMessage");
+const cutePhotoCount = document.querySelector("#cutePhotoCount");
+const cutePreviousButton = document.querySelector("#cutePreviousButton");
+const cuteNextButton = document.querySelector("#cuteNextButton");
 const giftCount = document.querySelector("#giftCount");
 const giftResult = document.querySelector("#giftResult");
-const letterHidden = document.querySelector("#letterHidden");
+const giftSection = document.querySelector("#gifts");
+const giftExperience = document.querySelector("#giftExperience");
+const giftVaultTicket = document.querySelector("#giftVaultTicket");
+const fortuneBoard = document.querySelector("#fortuneBoard");
+const fortuneResult = document.querySelector("#fortuneResult");
+const capsuleSpinButton = document.querySelector("#capsuleSpinButton");
 const certificateButton = document.querySelector("#certificateButton");
 const birthdayCertificate = document.querySelector("#birthdayCertificate");
 
@@ -159,6 +241,11 @@ let particles = [];
 let fireworkShells = [];
 let lastParticleFrameAt = performance.now();
 const openedGifts = new Set();
+const openedCapsules = new Set();
+let activeTimelineIndex = 0;
+let activeTimelinePhotoIndex = 0;
+let activeCuteMomentIndex = 0;
+let activeCutePhotoIndex = 0;
 const wishTextEntries = wishTextFallbacks.map((text, index) => ({
   key: `text-${index}`,
   text,
@@ -204,8 +291,206 @@ function validateLoginInput(username, password) {
   return Boolean(username && password);
 }
 
+function hasSupportedImageExtension(source) {
+  return new RegExp(`\\.(${IMAGE_EXTENSIONS.join("|")})(?:[?#].*)?$`, "i").test(String(source));
+}
+
+function getPhotoBase(source) {
+  return String(source || "").replace(new RegExp(`\\.(${IMAGE_EXTENSIONS.join("|")})(?:[?#].*)?$`, "i"), "");
+}
+
 function resolvePhotoUrl(source) {
-  return source;
+  return resolvedPhotoSources.get(getPhotoBase(source)) || source;
+}
+
+function probePhotoSource(source) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve(source);
+    image.onerror = () => resolve(null);
+    image.src = source;
+  });
+}
+
+function findPhotoSource(source) {
+  if (!source || /^(https?:|data:|blob:)/i.test(source)) {
+    return Promise.resolve(source);
+  }
+
+  const basePath = getPhotoBase(source);
+  if (photoSourceLookups.has(basePath)) {
+    return photoSourceLookups.get(basePath);
+  }
+
+  const lookup = (async () => {
+    for (const extension of IMAGE_EXTENSIONS) {
+      const candidate = `${basePath}.${extension}`;
+      const loadedSource = await probePhotoSource(candidate);
+      if (loadedSource) {
+        resolvedPhotoSources.set(basePath, loadedSource);
+        return loadedSource;
+      }
+    }
+
+    return hasSupportedImageExtension(source) ? source : null;
+  })();
+
+  photoSourceLookups.set(basePath, lookup);
+  return lookup;
+}
+
+function getGroupPhotos(group) {
+  if (Array.isArray(group?.photos) && group.photos.length) {
+    return group.photos;
+  }
+
+  return group?.image ? [group.image] : [];
+}
+
+function normalizeCollectionPhotoPath(source, directory) {
+  const photoPath = String(source || "").trim();
+
+  if (!photoPath || /^(https?:|data:|blob:|pics\/)/i.test(photoPath)) {
+    return photoPath;
+  }
+
+  return `${directory}${photoPath.replace(/^\/+/, "")}`;
+}
+
+function normalizePhotoGroups(groups, directory, type) {
+  if (!Array.isArray(groups)) {
+    return [];
+  }
+
+  return groups
+    .map((group, index) => {
+      const photos = (Array.isArray(group?.photos) ? group.photos : [group?.image])
+        .map((photo) => normalizeCollectionPhotoPath(photo, directory))
+        .filter(Boolean);
+
+      if (!photos.length) {
+        return null;
+      }
+
+      if (type === "timeline") {
+        const year = String(group.year || group.label || `回忆 ${index + 1}`);
+        return {
+          alt: group.alt || `${year} 回忆照片`,
+          photos,
+          text: group.text || "把这一段回忆收进胶片里，想起时随时翻出来看看。",
+          title: group.title || `回忆 ${index + 1}`,
+          year
+        };
+      }
+
+      const code = String(group.code || `瞬间 ${String(index + 1).padStart(2, "0")}`);
+      return {
+        alt: group.alt || `${code} 可爱瞬间照片`,
+        code,
+        photos,
+        text: group.text || "这一帧很值得慢慢看。",
+        title: group.title || code
+      };
+    })
+    .filter(Boolean);
+}
+
+function createTimelineButton(story, index) {
+  const button = document.createElement("button");
+  const year = document.createElement("span");
+  const title = document.createElement("strong");
+
+  button.className = "timeline-item";
+  button.type = "button";
+  button.dataset.story = String(index);
+  button.setAttribute("aria-pressed", String(index === activeTimelineIndex));
+  year.textContent = story.year;
+  title.textContent = story.title;
+  button.append(year, title);
+  return button;
+}
+
+function createCuteMomentButton(moment, index) {
+  const button = document.createElement("button");
+  const filmIcon = document.createElement("span");
+  const filmHole = document.createElement("i");
+  const title = document.createElement("strong");
+
+  button.className = "cute-moment-button";
+  button.type = "button";
+  button.dataset.cuteMoment = String(index);
+  button.setAttribute("aria-pressed", String(index === activeCuteMomentIndex));
+  filmIcon.className = "film-icon";
+  filmIcon.setAttribute("aria-hidden", "true");
+  filmIcon.appendChild(filmHole);
+  title.textContent = moment.code;
+  button.append(filmIcon, title);
+  return button;
+}
+
+function renderPhotoGroupLists() {
+  timelineList.replaceChildren(...stories.map(createTimelineButton));
+  cuteMomentList.replaceChildren(...cuteMoments.map(createCuteMomentButton));
+}
+
+async function fetchPhotoManifest(url) {
+  try {
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) {
+      return null;
+    }
+
+    return response.json();
+  } catch {
+    return null;
+  }
+}
+
+async function loadPhotoGroupManifests() {
+  const [timelineManifest, cuteManifest] = await Promise.all([
+    fetchPhotoManifest(TIMELINE_MANIFEST_URL),
+    fetchPhotoManifest(CUTE_MANIFEST_URL)
+  ]);
+  const timelineGroups = normalizePhotoGroups(timelineManifest?.groups, "pics/timeline/", "timeline");
+  const cuteGroups = normalizePhotoGroups(cuteManifest?.groups, "pics/cute/", "cute");
+
+  if (timelineGroups.length) {
+    stories = timelineGroups;
+    activeTimelineIndex = 0;
+    activeTimelinePhotoIndex = 0;
+  }
+
+  if (cuteGroups.length) {
+    cuteMoments = cuteGroups;
+    activeCuteMomentIndex = 0;
+    activeCutePhotoIndex = 0;
+  }
+
+  renderPhotoGroupLists();
+  await loadAdaptivePhotoSources();
+}
+
+async function loadAdaptivePhotoSources() {
+  const pageImages = [...document.querySelectorAll("[data-photo-base]")];
+  const imageBases = [
+    ...pageImages.map((image) => image.dataset.photoBase),
+    ...stories.flatMap(getGroupPhotos),
+    ...cuteMoments.flatMap(getGroupPhotos),
+    ...albumPhotos.map((photo) => photo.image),
+    ...gesturePhotos.map((photo) => photo.image)
+  ];
+
+  await Promise.all(imageBases.map((source) => findPhotoSource(source)));
+
+  pageImages.forEach((image) => {
+    const source = resolvePhotoUrl(image.dataset.photoBase);
+    if (source !== image.dataset.photoBase) {
+      image.src = source;
+    }
+  });
+
+  updateTimeline(activeTimelineIndex);
+  updateCuteMoment(activeCuteMomentIndex);
 }
 
 function clearSavedLogin() {
@@ -218,17 +503,34 @@ function closeModal() {
   document.body.classList.remove("modal-open");
 }
 
-function openPhotoModal(index) {
-  const photo = photos[index];
-  photoModalImage.src = resolvePhotoUrl(photo.image);
-  photoModalImage.alt = photo.alt;
-  photoCaption.textContent = photo.caption;
+function getPhotoCollection(collectionName) {
+  if (collectionName === "gesture") {
+    return gesturePhotos;
+  }
+
+  return albumPhotos;
+}
+
+function openPhotoModalSource(source, alt = "", caption = "") {
+  photoModalImage.src = resolvePhotoUrl(source);
+  photoModalImage.alt = alt;
+  photoCaption.textContent = caption;
   photoModal.classList.add("is-open");
   photoModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
 }
 
+function openPhotoModal(index, collectionName = "album") {
+  const photo = getPhotoCollection(collectionName)[index];
+  if (!photo) {
+    return;
+  }
+
+  openPhotoModalSource(photo.image, photo.alt, photo.caption);
+}
+
 function showToast(message) {
+  return;
   toast.textContent = message;
   toast.classList.add("is-visible");
   window.clearTimeout(toastTimer);
@@ -287,7 +589,9 @@ function normalizeWishImageEntry(entry, index, basePath) {
 }
 
 function updateWishLoadState(message) {
-  wishLoadState.textContent = message;
+  if (wishLoadState) {
+    wishLoadState.textContent = message;
+  }
 }
 
 function applyImageFrameState(container, imageElement, aspectProperty) {
@@ -305,12 +609,30 @@ function applyImageFrameState(container, imageElement, aspectProperty) {
   container.classList.toggle("is-portrait-image", aspect < 0.82);
   container.classList.toggle("is-wide-image", aspect > 1.28);
   container.classList.toggle("is-long-image", height / width > 2.1);
+
+  if (aspectProperty === "--cute-aspect") {
+    syncCuteFrameSize(container, aspect);
+  }
 }
 
 function syncImageFrameWhenReady(container, imageElement, aspectProperty) {
   if (imageElement.complete && imageElement.naturalWidth) {
     applyImageFrameState(container, imageElement, aspectProperty);
   }
+}
+
+function syncCuteFrameSize(container, aspect) {
+  const styles = window.getComputedStyle(container);
+  const frameX = Number.parseFloat(styles.getPropertyValue("--cute-frame-x")) || 0;
+  const frameTop = Number.parseFloat(styles.getPropertyValue("--cute-frame-top")) || 0;
+  const frameBottom = Number.parseFloat(styles.getPropertyValue("--cute-frame-bottom")) || 0;
+  const maxWidth = Math.max(160, container.clientWidth - frameX * 2);
+  const maxHeight = Math.max(160, container.clientHeight - frameTop - frameBottom);
+  const frameWidth = Math.min(maxWidth, maxHeight * aspect);
+  const frameHeight = Math.min(maxHeight, frameWidth / aspect);
+
+  container.style.setProperty("--cute-frame-width", `${Math.round(frameWidth)}px`);
+  container.style.setProperty("--cute-frame-height", `${Math.round(frameHeight)}px`);
 }
 
 function getWishEntries() {
@@ -360,66 +682,25 @@ function drawWishEntry() {
   }
 }
 
-function computeHeartPositions(count) {
-  if (count <= 1) {
-    return [{ x: 50, y: 52 }];
-  }
-
-  const rawPositions = Array.from({ length: count }, (_, index) => {
-    const angleValue = (index / count) * Math.PI * 2;
-    const sinValue = Math.sin(angleValue);
-    const rawX = 16 * Math.pow(sinValue, 3);
-    const rawY = -(
-      13 * Math.cos(angleValue) -
-      5 * Math.cos(2 * angleValue) -
-      2 * Math.cos(3 * angleValue) -
-      Math.cos(4 * angleValue)
-    );
-
-    return { x: rawX, y: rawY };
-  });
-  const xValues = rawPositions.map((position) => position.x);
-  const yValues = rawPositions.map((position) => position.y);
-  const minimumX = Math.min(...xValues);
-  const maximumX = Math.max(...xValues);
-  const minimumY = Math.min(...yValues);
-  const maximumY = Math.max(...yValues);
-
-  return rawPositions.map((position) => ({
-    x: 10 + ((position.x - minimumX) / (maximumX - minimumX)) * 80,
-    y: 10 + ((position.y - minimumY) / (maximumY - minimumY)) * 78
-  }));
-}
-
 function renderWishGallery() {
   wishGalleryBoard.className = `wish-gallery-board is-${currentWishShape}`;
   wishGalleryBoard.innerHTML = "";
-  wishGalleryBoard.style.setProperty(
-    "--heart-item-size",
-    `${Math.max(46, Math.min(86, 420 / Math.sqrt(Math.max(wishImageEntries.length, 1))))}px`
-  );
-  wishGalleryCount.textContent = wishImageEntries.length
-    ? `${wishImageEntries.length} 张截图 · 可切换形状`
-    : "还没有读取到截图";
+  if (wishGalleryCount) {
+    wishGalleryCount.textContent = "";
+  }
 
   if (!wishImageEntries.length) {
     const emptyState = document.createElement("p");
     emptyState.className = "wish-gallery-empty";
-    emptyState.textContent = "把好友祝福截图放进 wishes/friends/，再更新 wishes/manifest.json，这里会自动展示。";
+    emptyState.textContent = "暂无祝福截图";
     wishGalleryBoard.appendChild(emptyState);
     return;
   }
-
-  const heartPositions = computeHeartPositions(wishImageEntries.length);
 
   wishImageEntries.forEach((entry, index) => {
     const galleryItem = document.createElement("button");
     galleryItem.className = "wish-gallery-item";
     galleryItem.type = "button";
-    galleryItem.style.setProperty("--heart-x", `${heartPositions[index].x}%`);
-    galleryItem.style.setProperty("--heart-y", `${heartPositions[index].y}%`);
-    galleryItem.style.setProperty("--tilt", `${((index % 7) - 3) * 1.4}deg`);
-    galleryItem.style.setProperty("--river-offset", `${(index % 5) * 16}px`);
     galleryItem.setAttribute("aria-label", entry.caption);
 
     const image = document.createElement("img");
@@ -436,20 +717,6 @@ function renderWishGallery() {
 
     wishGalleryBoard.appendChild(galleryItem);
   });
-}
-
-function setWishGalleryShape(shape) {
-  if (!WISH_GALLERY_SHAPES.has(shape)) {
-    return;
-  }
-
-  currentWishShape = shape;
-  document.querySelectorAll("[data-wish-shape]").forEach((button) => {
-    const isSelected = button.dataset.wishShape === shape;
-    button.classList.toggle("is-active", isSelected);
-    button.setAttribute("aria-pressed", String(isSelected));
-  });
-  renderWishGallery();
 }
 
 function openWishGallery() {
@@ -499,14 +766,10 @@ async function loadWishImageManifest() {
       .map((entry, index) => normalizeWishImageEntry(entry, index, basePath))
       .filter(Boolean);
 
-    updateWishLoadState(
-      wishImageEntries.length
-        ? `已加载 ${wishImageEntries.length} 张好友祝福截图。`
-        : "还没有读取到祝福截图，复制图片后更新图册清单。"
-    );
+    updateWishLoadState("");
   } catch (error) {
     wishImageEntries = [];
-    updateWishLoadState("未读取到祝福截图清单，当前使用文字祝福备用。");
+    updateWishLoadState("");
   }
 
   renderWishGallery();
@@ -851,36 +1114,287 @@ function animateParticles(timestamp = performance.now()) {
   requestAnimationFrame(animateParticles);
 }
 
-function updateTimeline(index) {
+function updateReelButtons(previousButton, nextButton, photoCount, groupLabel, photoIndex, photoTotal) {
+  const isSinglePhoto = photoTotal < 2;
+  previousButton.disabled = isSinglePhoto;
+  nextButton.disabled = isSinglePhoto;
+  previousButton.setAttribute("aria-label", `查看${groupLabel}的上一张照片`);
+  nextButton.setAttribute("aria-label", `查看${groupLabel}的下一张照片`);
+  photoCount.textContent = `${String(photoIndex + 1).padStart(2, "0")} / ${String(photoTotal).padStart(2, "0")}`;
+}
+
+function playReelTransition(container, direction) {
+  if (!direction) {
+    return;
+  }
+
+  container.dataset.reelDirection = direction > 0 ? "next" : "previous";
+  container.classList.remove("is-reeling");
+  void container.offsetWidth;
+  container.classList.add("is-reeling");
+  window.setTimeout(() => container.classList.remove("is-reeling"), 560);
+}
+
+function updateTimeline(index, photoIndex = 0, direction = 0) {
   const story = stories[index];
-  timelinePreviewImage.src = resolvePhotoUrl(story.image);
-  timelinePreviewImage.alt = `${story.year} 回忆图片`;
+  if (!story) {
+    return;
+  }
+
+  const photos = getGroupPhotos(story);
+  if (!photos.length) {
+    return;
+  }
+
+  activeTimelineIndex = index;
+  activeTimelinePhotoIndex = ((photoIndex % photos.length) + photos.length) % photos.length;
+  const source = photos[activeTimelinePhotoIndex];
+
+  timelinePreviewImage.dataset.photoBase = source;
+  timelinePreviewImage.src = resolvePhotoUrl(source);
+  timelinePreviewImage.alt = `${story.alt} · 第 ${activeTimelinePhotoIndex + 1} 张`;
   timelineYear.textContent = story.year;
   timelineStoryTitle.textContent = story.title;
   timelineStoryText.textContent = story.text;
+  updateReelButtons(
+    timelinePreviousButton,
+    timelineNextButton,
+    timelinePhotoCount,
+    story.year,
+    activeTimelinePhotoIndex,
+    photos.length
+  );
+
+  timelineList.querySelectorAll("[data-story]").forEach((item) => {
+    const isActive = Number(item.dataset.story) === activeTimelineIndex;
+    item.classList.toggle("is-active", isActive);
+    item.setAttribute("aria-pressed", String(isActive));
+  });
+  playReelTransition(document.querySelector("#timelineReel"), direction);
 }
 
-function updateCuteMoment(index) {
+function updateCuteMoment(index, photoIndex = 0, direction = 0) {
   const moment = cuteMoments[index];
-  cuteMomentImage.dataset.securePhoto = moment.image;
-  cuteMomentImage.src = resolvePhotoUrl(moment.image);
-  cuteMomentImage.alt = moment.alt;
+  if (!moment) {
+    return;
+  }
+
+  const photos = getGroupPhotos(moment);
+  if (!photos.length) {
+    return;
+  }
+
+  activeCuteMomentIndex = index;
+  activeCutePhotoIndex = ((photoIndex % photos.length) + photos.length) % photos.length;
+  const source = photos[activeCutePhotoIndex];
+
+  cuteMomentImage.dataset.securePhoto = source;
+  cuteMomentImage.dataset.photoBase = source;
+  cuteMomentImage.src = resolvePhotoUrl(source);
+  cuteMomentImage.alt = `${moment.alt} · 第 ${activeCutePhotoIndex + 1} 张`;
   cuteMomentCode.textContent = moment.code;
   cuteMomentTitle.textContent = moment.title;
   cuteMomentText.textContent = moment.text;
+  updateReelButtons(
+    cutePreviousButton,
+    cuteNextButton,
+    cutePhotoCount,
+    moment.code,
+    activeCutePhotoIndex,
+    photos.length
+  );
+
+  cuteMomentList.querySelectorAll("[data-cute-moment]").forEach((item) => {
+    const isActive = Number(item.dataset.cuteMoment) === activeCuteMomentIndex;
+    item.classList.toggle("is-active", isActive);
+    item.setAttribute("aria-pressed", String(isActive));
+  });
   cutePlaceholder.hidden = true;
   cuteMomentImage.hidden = false;
   syncImageFrameWhenReady(cuteScreen, cuteMomentImage, "--cute-aspect");
   cuteCaption.hidden = false;
   cuteScreen.classList.remove("is-empty");
+  playReelTransition(document.querySelector("#cuteReel"), direction);
+  playCuteRevealEffect();
 }
 
-function addUserStar(x, y) {
-  const star = document.createElement("span");
-  star.className = "user-star";
-  star.style.left = `${x}px`;
-  star.style.top = `${y}px`;
-  starSky.appendChild(star);
+function moveTimelinePhoto(direction) {
+  if (getGroupPhotos(stories[activeTimelineIndex]).length < 2) {
+    return;
+  }
+
+  updateTimeline(activeTimelineIndex, activeTimelinePhotoIndex + direction, direction);
+}
+
+function moveCutePhoto(direction) {
+  if (getGroupPhotos(cuteMoments[activeCuteMomentIndex]).length < 2) {
+    return;
+  }
+
+  updateCuteMoment(activeCuteMomentIndex, activeCutePhotoIndex + direction, direction);
+}
+
+function enablePhotoSwipe(element, onSwipe) {
+  let pointerStartX = null;
+
+  element.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("button")) {
+      return;
+    }
+
+    pointerStartX = event.clientX;
+  });
+
+  element.addEventListener("pointerup", (event) => {
+    if (pointerStartX === null) {
+      return;
+    }
+
+    const distance = event.clientX - pointerStartX;
+    pointerStartX = null;
+
+    if (Math.abs(distance) >= 42) {
+      onSwipe(distance < 0 ? 1 : -1);
+    }
+  });
+
+  element.addEventListener("pointercancel", () => {
+    pointerStartX = null;
+  });
+}
+
+function playCuteRevealEffect() {
+  cuteScreen.classList.remove("is-revealing");
+  void cuteScreen.offsetWidth;
+  cuteScreen.classList.add("is-revealing");
+  window.setTimeout(() => cuteScreen.classList.remove("is-revealing"), 760);
+}
+
+function releaseGiftConfetti(gift) {
+  const launchPad = giftExperience || gift;
+  const streamerColors = ["#fff176", "#ff4f8b", "#8b7cf6", "#20c7bf", "#ffffff", "#ff9f1c", "#f72585"];
+  launchPad.classList.remove("is-celebrating");
+  void launchPad.offsetWidth;
+  launchPad.classList.add("is-celebrating");
+
+  for (let index = 0; index < 64; index += 1) {
+    const streamer = document.createElement("span");
+    streamer.className = index % 5 === 0 ? "gift-streamer is-star" : "gift-streamer";
+    streamer.style.setProperty("--streamer-x", `${randomBetween(-360, 360)}px`);
+    streamer.style.setProperty("--streamer-y", `${randomBetween(-320, -92)}px`);
+    streamer.style.setProperty("--streamer-rotate", `${randomBetween(-420, 420)}deg`);
+    streamer.style.setProperty("--streamer-delay", `${randomBetween(0, 190)}ms`);
+    streamer.style.setProperty("--streamer-color", pickRandom(streamerColors));
+    launchPad.appendChild(streamer);
+    window.setTimeout(() => streamer.remove(), 1750);
+  }
+
+  window.setTimeout(() => launchPad.classList.remove("is-celebrating"), 1320);
+}
+
+function celebrateGift(gift) {
+  const giftName = gift.querySelector("strong")?.textContent || "生日礼物";
+  if (giftVaultTicket) {
+    giftVaultTicket.textContent = giftName;
+  }
+
+  giftExperience?.classList.add("has-opened");
+  releaseGiftConfetti(gift);
+
+  giftResult.classList.remove("is-celebrating");
+  void giftResult.offsetWidth;
+  giftResult.classList.add("is-celebrating");
+  window.setTimeout(() => giftResult.classList.remove("is-celebrating"), 900);
+}
+
+function releaseCapsuleSparks() {
+  const sparkSymbols = ["✦", "✧", "♡", "·"];
+
+  for (let index = 0; index < 26; index += 1) {
+    const spark = document.createElement("span");
+    spark.className = "capsule-spark";
+    spark.textContent = pickRandom(sparkSymbols);
+    spark.style.setProperty("--spark-x", `${randomBetween(-220, 220)}px`);
+    spark.style.setProperty("--spark-y", `${randomBetween(-230, -42)}px`);
+    spark.style.setProperty("--spark-rotate", `${randomBetween(-180, 180)}deg`);
+    spark.style.setProperty("--spark-delay", `${randomBetween(0, 120)}ms`);
+    fortuneBoard.appendChild(spark);
+    window.setTimeout(() => spark.remove(), 1200);
+  }
+}
+
+function setCapsuleResult(surprise) {
+  const rewardImage = new Image();
+  const copy = document.createElement("div");
+  const title = document.createElement("strong");
+  const text = document.createElement("span");
+
+  rewardImage.className = "capsule-reward-image";
+  rewardImage.src = surprise.image;
+  rewardImage.alt = surprise.title;
+  rewardImage.tabIndex = 0;
+  rewardImage.setAttribute("role", "button");
+  rewardImage.setAttribute("aria-label", `双击放大查看：${surprise.title}`);
+  rewardImage.addEventListener("dblclick", () => {
+    openPhotoModalSource(surprise.image, surprise.title, surprise.title);
+  });
+  rewardImage.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openPhotoModalSource(surprise.image, surprise.title, surprise.title);
+    }
+  });
+  title.textContent = surprise.title;
+  text.textContent = surprise.text;
+  copy.append(title, text);
+  fortuneResult.classList.add("has-creature");
+  fortuneResult.replaceChildren(rewardImage, copy);
+}
+
+function spinCapsuleMachine() {
+  if (!capsuleSpinButton || capsuleSpinButton.disabled) {
+    return;
+  }
+
+  if (openedCapsules.size === capsuleSurprises.length) {
+    openedCapsules.clear();
+    fortuneBoard.classList.remove("is-complete");
+    fortuneBoard.querySelectorAll(".capsule.is-dispensed").forEach((capsule) => capsule.classList.remove("is-dispensed"));
+  }
+
+  const availableIndexes = capsuleSurprises
+    .map((_, index) => index)
+    .filter((index) => !openedCapsules.has(index));
+  const surpriseIndex = pickRandom(availableIndexes);
+  const surprise = capsuleSurprises[surpriseIndex];
+  const capsules = [...fortuneBoard.querySelectorAll(".capsule")];
+  const selectedCapsule = capsules[surpriseIndex % capsules.length];
+
+  capsuleSpinButton.disabled = true;
+  fortuneBoard.classList.remove("is-spinning", "is-dispensing");
+  void fortuneBoard.offsetWidth;
+  fortuneBoard.classList.add("is-spinning");
+
+  window.setTimeout(() => {
+    openedCapsules.add(surpriseIndex);
+    selectedCapsule?.classList.add("is-dispensed");
+    fortuneBoard.classList.remove("is-spinning");
+    fortuneBoard.classList.add("is-dispensing");
+    setCapsuleResult(surprise);
+    releaseCapsuleSparks();
+    showElementFireworks(fortuneBoard, { duration: 860, shells: 6 });
+
+    if (openedCapsules.size === capsuleSurprises.length) {
+      fortuneBoard.classList.add("is-complete");
+    }
+  }, 700);
+
+  window.setTimeout(() => {
+    fortuneBoard.classList.remove("is-dispensing");
+    capsuleSpinButton.disabled = false;
+    capsuleSpinButton.querySelector("span:last-child").textContent =
+      openedCapsules.size === capsuleSurprises.length ? "重新装入心愿" : "再转一次";
+  }, 1320);
 }
 
 window.birthdayMuseum = {
@@ -915,31 +1429,30 @@ document.querySelectorAll("[data-photo]").forEach((photo) => {
   });
 });
 
-document.querySelectorAll("[data-story]").forEach((item) => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll("[data-story]").forEach((node) => {
-      node.classList.remove("is-active");
-      node.setAttribute("aria-pressed", "false");
-    });
-    item.classList.add("is-active");
-    item.setAttribute("aria-pressed", "true");
-    updateTimeline(Number(item.dataset.story));
-    burst(window.innerWidth * 0.66, window.innerHeight * 0.46);
-  });
+timelineList.addEventListener("click", (event) => {
+  const item = event.target.closest("[data-story]");
+  if (!item) {
+    return;
+  }
+
+  updateTimeline(Number(item.dataset.story));
 });
 
-document.querySelectorAll("[data-cute-moment]").forEach((item) => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll("[data-cute-moment]").forEach((node) => {
-      node.classList.remove("is-active");
-      node.setAttribute("aria-pressed", "false");
-    });
-    item.classList.add("is-active");
-    item.setAttribute("aria-pressed", "true");
-    updateCuteMoment(Number(item.dataset.cuteMoment));
-    showElementFireworks(cuteScreen, { duration: 950, shells: 7 });
-  });
+cuteMomentList.addEventListener("click", (event) => {
+  const item = event.target.closest("[data-cute-moment]");
+  if (!item) {
+    return;
+  }
+
+  updateCuteMoment(Number(item.dataset.cuteMoment));
 });
+
+timelinePreviousButton.addEventListener("click", () => moveTimelinePhoto(-1));
+timelineNextButton.addEventListener("click", () => moveTimelinePhoto(1));
+cutePreviousButton.addEventListener("click", () => moveCutePhoto(-1));
+cuteNextButton.addEventListener("click", () => moveCutePhoto(1));
+enablePhotoSwipe(document.querySelector("#timelineReel"), moveTimelinePhoto);
+enablePhotoSwipe(document.querySelector("#cuteReel"), moveCutePhoto);
 
 wishButton.addEventListener("click", drawWishEntry);
 
@@ -947,12 +1460,6 @@ wishGalleryButton.addEventListener("click", toggleWishGallery);
 
 wishGalleryCloseButtons.forEach((button) => {
   button.addEventListener("click", closeWishGallery);
-});
-
-document.querySelectorAll("[data-wish-shape]").forEach((button) => {
-  button.addEventListener("click", () => {
-    setWishGalleryShape(button.dataset.wishShape);
-  });
 });
 
 wishImage.addEventListener("load", () => {
@@ -966,7 +1473,7 @@ wishImage.addEventListener("error", () => {
   wishImage.hidden = true;
   wishPlaceholder.hidden = false;
   wishCard.classList.remove("is-compact");
-  wishCard.textContent = "这张祝福截图暂时没有加载成功，请检查图册清单里的文件名。";
+  wishCard.textContent = "祝福截图未加载成功。";
 });
 
 cuteMomentImage.addEventListener("load", () => {
@@ -978,62 +1485,28 @@ document.querySelector("#surpriseButton").addEventListener("click", () => {
   showToast("开场灯光已点亮：今天所有好事都优先派送给她。");
 });
 
-starSky.addEventListener("click", (event) => {
-  const rect = starSky.getBoundingClientRect();
-  const target = event.target.closest(".star-dot");
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  if (target) {
-    starMessage.textContent = target.dataset.wish;
-  } else {
-    addUserStar(x, y);
-    starMessage.textContent = "一颗新的星星被放进去了。";
-  }
-
-  burst(event.clientX, event.clientY);
-});
-
-starForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const value = starInput.value.trim();
-  if (!value) {
-    starMessage.textContent = "先写一句愿望，再送进星空。";
-    return;
-  }
-
-  starMessage.textContent = value;
-  addUserStar(90 + Math.random() * (starSky.clientWidth - 180), 90 + Math.random() * (starSky.clientHeight - 180));
-  starInput.value = "";
-  showElementFireworks(starSky, { duration: 1300, shells: 10 });
-});
-
 document.querySelectorAll("[data-gift]").forEach((gift) => {
   gift.addEventListener("click", () => {
     const index = Number(gift.dataset.gift);
     openedGifts.add(index);
     gift.classList.add("is-opened");
-    gift.querySelector(".gift-action").textContent = "已打开";
+    gift.querySelector(".gift-action").textContent = "已开启";
     giftResult.textContent = gifts[index];
-    giftCount.textContent = String(openedGifts.size);
-    burst(window.innerWidth * 0.5, window.innerHeight * 0.5);
+    if (giftCount) {
+      giftCount.textContent = String(openedGifts.size);
+    }
+    celebrateGift(gift);
 
     if (openedGifts.size === gifts.length) {
       window.setTimeout(() => {
+        releaseGiftConfetti(giftSection);
         showToast("三份小礼物已收集，结尾烟花可以打开了。");
       }, 400);
     }
   });
 });
 
-document.querySelector("#letterButton").addEventListener("click", () => {
-  if (letterHidden.hidden) {
-    letterHidden.hidden = false;
-    document.querySelector("#letterButton").textContent = "这封信已经展开";
-    showToast("信件的下一段已经打开。");
-    burst(window.innerWidth * 0.48, window.innerHeight * 0.55);
-  }
-});
+capsuleSpinButton?.addEventListener("click", spinCapsuleMachine);
 
 certificateButton.addEventListener("click", () => {
   birthdayCertificate.classList.add("is-lit");
@@ -1048,13 +1521,23 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-window.addEventListener("scroll", setHeaderState, { passive: true });
-window.addEventListener("resize", resizeCanvas);
+function handleWindowResize() {
+  resizeCanvas();
+  syncImageFrameWhenReady(cuteScreen, cuteMomentImage, "--cute-aspect");
+  if (!wishImage.hidden) {
+    syncImageFrameWhenReady(wishStage, wishImage, "--wish-aspect");
+  }
+}
 
-resizeCanvas();
+window.addEventListener("scroll", setHeaderState, { passive: true });
+window.addEventListener("resize", handleWindowResize);
+
+handleWindowResize();
 setHeaderState();
 animateParticles();
 loadWishImageManifest();
+renderPhotoGroupLists();
+loadPhotoGroupManifests();
 
 function restoreSavedLogin() {
   if (sessionStorage.getItem(LOGIN_SESSION_KEY) !== "1") {

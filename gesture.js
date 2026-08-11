@@ -422,7 +422,7 @@ function magnifySelectedPhoto(sourceLabel) {
   gestureState.photoOpenTimer = window.setTimeout(() => {
     gestureState.photoOpenTimer = null;
     gestureState.isGesturePhotoOpen = true;
-    window.birthdayMuseum?.openPhotoModal(Number(selectedCard.dataset.gesturePhoto));
+    window.birthdayMuseum?.openPhotoModal(Number(selectedCard.dataset.gesturePhoto), "gesture");
   }, 180);
 
   window.setTimeout(() => {
@@ -871,7 +871,7 @@ function renderPhotoOrbit() {
 
   photoCards.forEach((photoCard, photoIndex) => {
     const orbitPoint = getPhotoOrbitPoint(photoIndex, stageWidth, stageHeight);
-    const selectedScale = photoIndex === gestureState.selectedIndex ? 0.24 : 0;
+    const selectedScale = photoIndex === gestureState.selectedIndex ? 0.42 : 0;
     const magnifiedScale = photoCard.classList.contains("is-magnified") ? 0.52 : 0;
     const photoScale = 0.76 + orbitPoint.depthRatio * 0.28 + selectedScale + magnifiedScale;
     const photoRotation = Math.cos(orbitPoint.radians) * 8;
