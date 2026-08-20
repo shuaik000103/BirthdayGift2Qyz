@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>生日博物馆</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
     <link rel="stylesheet" href="styles.css?v=20260811-5" />
     <link rel="stylesheet" href="gallery-refinement.css?v=20260811-2" />
   </head>
@@ -149,7 +151,7 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5 7 12l7.5 7.5M8 12h9" /></svg>
                 </button>
                 <figure class="memory-reel-frame">
-                  <img id="timelinePreviewImage" src="assets/photo-placeholder.svg" data-photo-base="pics/timeline/2021" alt="时间线故事照片" />
+                  <img id="timelinePreviewImage" src="assets/photo-placeholder.svg" data-photo-base="pics/timeline/01" alt="时间线故事照片" />
                   <figcaption id="timelinePhotoCount">01 / 01</figcaption>
                 </figure>
                 <button class="reel-button reel-button-next" id="timelineNextButton" type="button" aria-label="查看下一张时间线照片">
@@ -201,9 +203,9 @@
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 4.5 7.5 7.5-7.5 7.5M16 12H7" /></svg>
                 </button>
               </div>
-              <img class="cute-moment-image" id="cuteMomentImage" src="assets/photo-placeholder.svg" data-photo-base="pics/cute/01" alt="可爱瞬间照片" />
+              <img class="cute-moment-image" id="cuteMomentImage" src="assets/photo-placeholder.svg" data-photo-base="pics/cute/01-01" alt="可爱瞬间照片" />
               <div class="cute-screen-caption" id="cuteCaption">
-                <p id="cuteMomentCode">瞬间 01</p>
+                <p id="cuteMomentCode">瞬间 1</p>
                 <h3 id="cuteMomentTitle">突然认真</h3>
                 <p id="cuteMomentText">适合放一张很乖、很专注的照片。</p>
               </div>
@@ -239,9 +241,25 @@
           <div class="wish-panel">
             <div class="wish-copy">
               <h2 id="wishes-title">抽取一张生日祝福</h2>
-              <div class="wish-actions">
-                <button class="button primary dark" id="wishButton" type="button">抽一张祝福</button>
-                <button class="button ghost wish-secondary" id="wishGalleryButton" type="button">展示全部祝福</button>
+              <div class="wish-actions" aria-label="生日祝福操作">
+                <button class="wish-action-card wish-action-draw" id="wishButton" type="button">
+                  <span class="wish-action-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M4.2 5.8l2.9 2.9M16.9 15.3l2.9 2.9M3 12h4M17 12h4M4.2 18.2l2.9-2.9M16.9 8.7l2.9-2.9" /></svg>
+                  </span>
+                  <span class="wish-action-copy">
+                    <span>摇出祝福</span>
+                    <small>让今天先替她说一句好话</small>
+                  </span>
+                </button>
+                <button class="wish-action-card wish-action-gallery" id="wishGalleryButton" type="button">
+                  <span class="wish-action-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z" /></svg>
+                  </span>
+                  <span class="wish-action-copy">
+                    <span data-wish-gallery-label>展开祝福墙</span>
+                    <small>一次看完所有朋友的心意</small>
+                  </span>
+                </button>
               </div>
             </div>
             <div class="wish-stage" id="wishStage">
@@ -289,7 +307,7 @@
         <section class="gift-section page-section" id="gifts" aria-labelledby="gifts-title">
           <div class="section-heading split-heading">
             <div>
-              <h2 id="gifts-title">拆开三份小礼物</h2>
+              <h2 id="gifts-title">抽取四张礼物牌</h2>
             </div>
           </div>
           <div class="gift-experience" id="giftExperience">
@@ -303,26 +321,64 @@
             </div>
             <div class="gift-grid" aria-label="选择要拆开的礼物">
               <button class="gift-box" type="button" data-gift="0">
-                <span class="gift-token">礼物 01</span>
-                <strong>快乐补给券</strong>
-                <span class="gift-action">拉开缎带</span>
+                <span class="gift-token">CARD 01</span>
+                <strong>甜甜补给牌</strong>
+                <span class="gift-action">翻开答题</span>
               </button>
               <button class="gift-box" type="button" data-gift="1">
-                <span class="gift-token">礼物 02</span>
-                <strong>奶茶兑换券</strong>
-                <span class="gift-action">拉开缎带</span>
+                <span class="gift-token">CARD 02</span>
+                <strong>陪伴通行牌</strong>
+                <span class="gift-action">翻开答题</span>
               </button>
               <button class="gift-box" type="button" data-gift="2">
-                <span class="gift-token">礼物 03</span>
-                <strong>陪伴通行证</strong>
-                <span class="gift-action">拉开缎带</span>
+                <span class="gift-token">CARD 03</span>
+                <strong>快乐召唤牌</strong>
+                <span class="gift-action">翻开答题</span>
+              </button>
+              <button class="gift-box" type="button" data-gift="3">
+                <span class="gift-token">CARD 04</span>
+                <strong>心愿加成牌</strong>
+                <span class="gift-action">翻开答题</span>
               </button>
             </div>
           </div>
           <div class="gift-result" id="giftResult" aria-live="polite">
-            快乐会在这里盖章。
+            选一张礼物牌，答对后领取奖励。
           </div>
         </section>
+
+        <div class="gift-challenge-modal" id="giftChallengeModal" aria-hidden="true" hidden>
+          <button class="gift-challenge-backdrop" type="button" data-gift-challenge-close aria-label="关闭礼物题目"></button>
+          <section class="gift-challenge-card" role="dialog" aria-modal="true" aria-labelledby="giftChallengeTitle">
+            <button class="gift-challenge-close" type="button" data-gift-challenge-close aria-label="关闭">×</button>
+            <div class="gift-challenge-question" id="giftQuestionView">
+              <p class="gift-challenge-kicker" id="giftChallengeKicker">CARD 01</p>
+              <h3 id="giftChallengeTitle">礼物题目</h3>
+              <p class="gift-challenge-prompt" id="giftChallengePrompt"></p>
+              <label class="gift-answer-field">
+                <span>你的答案</span>
+                <input id="giftAnswerInput" type="text" autocomplete="off" />
+              </label>
+              <p class="gift-challenge-feedback" id="giftChallengeFeedback" aria-live="polite"></p>
+              <div class="gift-challenge-actions">
+                <button class="gift-answer-submit" id="giftAnswerSubmit" type="button">提交答案</button>
+              </div>
+            </div>
+            <div class="gift-reward-view" id="giftRewardView" hidden>
+              <span class="gift-screenshot-note">凭此截图兑换奖励</span>
+              <p class="gift-reward-kicker" id="giftRewardKicker">REWARD</p>
+              <h3 id="giftRewardTitle">奖励已解锁</h3>
+              <p id="giftRewardText"></p>
+              <button class="gift-answer-submit" type="button" data-gift-challenge-close>收好奖励</button>
+            </div>
+            <div class="gift-punishment-view" id="giftPunishmentView" hidden>
+              <p class="gift-reward-kicker">处罚任务</p>
+              <h3>答错啦，先完成小处罚</h3>
+              <p id="giftPunishmentText"></p>
+              <button class="gift-answer-submit" id="giftPunishmentDone" type="button">我已完成处罚，继续答题</button>
+            </div>
+          </section>
+        </div>
 
         <section class="fortune-section page-section" id="fortune" aria-labelledby="fortune-title">
           <div class="section-heading split-heading">
@@ -363,11 +419,28 @@
 
         <section class="certificate-section page-section" id="certificate" aria-labelledby="certificate-title">
           <div class="certificate-copy">
-            <h2 id="certificate-title">生日证书</h2>
-            <p>
-              这份证书把今天的偏爱郑重盖章：她是今日主角，也值得在新的一岁继续被好运和真心认真收藏。
-            </p>
-            <button class="button primary certificate-button" id="certificateButton" type="button">点亮证书</button>
+            <div class="certificate-letter">
+              <span class="certificate-letter-fold" aria-hidden="true"></span>
+              <p class="certificate-kicker">写给她的一句</p>
+              <h2 id="certificate-title">生日证书</h2>
+              <div class="certificate-note-card">
+                <span>信封里的短句</span>
+                <p>
+                  愿你新的一岁，继续做自己喜欢的人，也一直被具体、真诚、不会迟到的快乐包围。
+                </p>
+              </div>
+              <button class="certificate-button" id="certificateButton" type="button">
+                <span class="certificate-button-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 4.5 13.8 8l3.8.6-2.7 2.6.6 3.8-3.4-1.8-3.4 1.8.6-3.8-2.7-2.6 3.8-.6Z" />
+                  </svg>
+                </span>
+                <span class="certificate-button-copy">
+                  <strong>盖上印章</strong>
+                  <small>把这句话封进证书里</small>
+                </span>
+              </button>
+            </div>
           </div>
           <div class="certificate-stage" aria-label="生日证书预览">
             <article class="birthday-certificate" id="birthdayCertificate">

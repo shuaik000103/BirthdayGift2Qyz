@@ -3,26 +3,39 @@
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
 const resolvedPhotoSources = new Map();
 const photoSourceLookups = new Map();
+const LOGIN_USERNAME = "qyz0904";
+const LOGIN_PASSWORD = "0904qyz";
 
 let cuteMoments = [
   {
-    code: "瞬间 01",
+    code: "瞬间 1",
     title: "突然认真",
-    photos: ["pics/cute/01"],
+    photos: [
+      "pics/cute/01-01",
+      "pics/cute/01-02",
+      "pics/cute/01-03",
+      "pics/cute/01-04",
+      "pics/cute/01-05",
+      "pics/cute/01-06",
+      "pics/cute/01-07",
+      "pics/cute/01-08",
+      "pics/cute/01-09",
+      "pics/cute/01-10"
+    ],
     alt: "可爱瞬间照片",
     text: "适合放一张很乖、很专注的照片，像是世界突然安静地偏向她。"
   },
   {
-    code: "瞬间 02",
+    code: "瞬间 2",
     title: "笑到失控",
-    photos: ["pics/cute/02"],
+    photos: ["pics/cute/02-01", "pics/cute/02-02"],
     alt: "开心大笑的可爱瞬间照片",
     text: "把那种藏不住的开心收进来，以后每次点开都能重新被逗笑。"
   },
   {
-    code: "瞬间 03",
+    code: "瞬间 3",
     title: "今日限定",
-    photos: ["pics/cute/03"],
+    photos: ["pics/cute/03-01", "pics/cute/03-02"],
     alt: "生日当天的可爱瞬间照片",
     text: "今天她拥有最高优先级，连普通画面都要被认真收藏。"
   }
@@ -32,25 +45,25 @@ let stories = [
   {
     year: "2021",
     title: "第一次被记住的瞬间",
-    photos: ["pics/timeline/2021"],
+    photos: ["pics/timeline/01"],
     text: "有些人出现得很自然，却会在后来变成生活里很重要的注脚。"
   },
   {
     year: "2022",
     title: "一起笑到停不下来",
-    photos: ["pics/timeline/2022"],
+    photos: ["pics/timeline/02"],
     text: "普通的一天，因为有人一起分享，就突然变成了很值得回看的片段。"
   },
   {
     year: "2023",
     title: "把普通日子过成纪念日",
-    photos: ["pics/timeline/2023"],
+    photos: ["pics/timeline/03"],
     text: "不是每个纪念日都需要隆重，有时候一杯热饮、一句玩笑，就足够被记很久。"
   },
   {
     year: "2026",
     title: "今天，把祝福郑重送达",
-    photos: ["pics/timeline/2026"],
+    photos: ["pics/timeline/04"],
     text: "新的一岁已经开始，愿她继续拥有明亮、具体、不会迟到的快乐。"
   }
 ];
@@ -125,10 +138,46 @@ const DEFAULT_WISH_BASE_PATH = "wishes/friends/";
 const TIMELINE_MANIFEST_URL = "pics/timeline/manifest.json";
 const CUTE_MANIFEST_URL = "pics/cute/manifest.json";
 
-const gifts = [
-  "快乐补给券已打开：凭此券可以兑换一次认真陪聊，不限时长。",
-  "奶茶兑换券已打开：下次见面，第一杯甜的由送礼人负责。",
-  "陪伴通行证已打开：想出门、想吐槽、想发呆，都可以随时呼叫。"
+const giftChallenges = [
+  {
+    answer: "0904",
+    card: "CARD 01",
+    prompt: "她的生日是几月几号？请输入 4 位数字。",
+    punishment: "对着手机屏幕认真说一声：我是笨蛋。说完再继续答题。",
+    rewardText: "凭这张截图，可以兑换一杯喜欢的奶茶，甜度和加料都由她决定。",
+    rewardTitle: "一杯奶茶兑换券",
+    title: "甜甜补给牌"
+  },
+  {
+    answer: "曲艺珍",
+    aliases: ["qyz"],
+    card: "CARD 02",
+    prompt: "今日主角的名字是什么？中文或首字母都可以。",
+    punishment: "给自己比一个大大的爱心，然后说：我再想想。",
+    rewardText: "凭这张截图，可以兑换一次不限时认真陪聊，吐槽、分享、发呆都算。",
+    rewardTitle: "陪伴通行证",
+    title: "陪伴通行牌"
+  },
+  {
+    answer: "生日快乐",
+    aliases: ["happy birthday"],
+    card: "CARD 03",
+    prompt: "今天最应该对她说的四个字是什么？",
+    punishment: "对着屏幕夸她一句，夸完再回来继续答题。",
+    rewardText: "凭这张截图，可以兑换一次快乐补给：想吃什么、想去哪，由她优先选择。",
+    rewardTitle: "快乐补给券",
+    title: "快乐召唤牌"
+  },
+  {
+    answer: "喜欢",
+    aliases: ["喜欢你", "love"],
+    card: "CARD 04",
+    prompt: "这份礼物最想表达的两个字是什么？",
+    punishment: "对着手机屏幕说一声：我是笨蛋，但我还能答对。",
+    rewardText: "凭这张截图，可以兑换一个小心愿。合理范围内，送礼人负责认真兑现。",
+    rewardTitle: "心愿加成券",
+    title: "心愿加成牌"
+  }
 ];
 
 const capsuleSurprises = [
@@ -196,6 +245,7 @@ const header = document.querySelector(".site-header");
 const wishCard = document.querySelector("#wishCard");
 const wishButton = document.querySelector("#wishButton");
 const wishGalleryButton = document.querySelector("#wishGalleryButton");
+const wishGalleryButtonLabel = document.querySelector("[data-wish-gallery-label]");
 const wishGalleryPanel = document.querySelector("#wishGalleryPanel");
 const wishGalleryBoard = document.querySelector("#wishGalleryBoard");
 const wishGalleryCount = document.querySelector("#wishGalleryCount");
@@ -230,6 +280,22 @@ const giftResult = document.querySelector("#giftResult");
 const giftSection = document.querySelector("#gifts");
 const giftExperience = document.querySelector("#giftExperience");
 const giftVaultTicket = document.querySelector("#giftVaultTicket");
+const giftChallengeModal = document.querySelector("#giftChallengeModal");
+const giftQuestionView = document.querySelector("#giftQuestionView");
+const giftRewardView = document.querySelector("#giftRewardView");
+const giftPunishmentView = document.querySelector("#giftPunishmentView");
+const giftChallengeKicker = document.querySelector("#giftChallengeKicker");
+const giftChallengeTitle = document.querySelector("#giftChallengeTitle");
+const giftChallengePrompt = document.querySelector("#giftChallengePrompt");
+const giftAnswerInput = document.querySelector("#giftAnswerInput");
+const giftAnswerSubmit = document.querySelector("#giftAnswerSubmit");
+const giftChallengeFeedback = document.querySelector("#giftChallengeFeedback");
+const giftRewardKicker = document.querySelector("#giftRewardKicker");
+const giftRewardTitle = document.querySelector("#giftRewardTitle");
+const giftRewardText = document.querySelector("#giftRewardText");
+const giftPunishmentText = document.querySelector("#giftPunishmentText");
+const giftPunishmentDone = document.querySelector("#giftPunishmentDone");
+const giftChallengeCloseButtons = document.querySelectorAll("[data-gift-challenge-close]");
 const fortuneBoard = document.querySelector("#fortuneBoard");
 const fortuneResult = document.querySelector("#fortuneResult");
 const capsuleSpinButton = document.querySelector("#capsuleSpinButton");
@@ -246,6 +312,7 @@ let activeTimelineIndex = 0;
 let activeTimelinePhotoIndex = 0;
 let activeCuteMomentIndex = 0;
 let activeCutePhotoIndex = 0;
+let activeGiftIndex = 0;
 const wishTextEntries = wishTextFallbacks.map((text, index) => ({
   key: `text-${index}`,
   text,
@@ -288,7 +355,10 @@ function enterMuseum(options = {}) {
 }
 
 function validateLoginInput(username, password) {
-  return Boolean(username && password);
+  return (
+    String(username || "").trim().toLowerCase() === LOGIN_USERNAME.toLowerCase() &&
+    String(password || "") === LOGIN_PASSWORD
+  );
 }
 
 function hasSupportedImageExtension(source) {
@@ -383,7 +453,7 @@ function normalizePhotoGroups(groups, directory, type) {
         };
       }
 
-      const code = String(group.code || `瞬间 ${String(index + 1).padStart(2, "0")}`);
+      const code = String(group.code || `瞬间 ${index + 1}`);
       return {
         alt: group.alt || `${code} 可爱瞬间照片`,
         code,
@@ -530,7 +600,10 @@ function openPhotoModal(index, collectionName = "album") {
 }
 
 function showToast(message) {
-  return;
+  if (!toast) {
+    return;
+  }
+
   toast.textContent = message;
   toast.classList.add("is-visible");
   window.clearTimeout(toastTimer);
@@ -723,7 +796,9 @@ function openWishGallery() {
   wishGalleryPanel.hidden = false;
   wishGalleryPanel.setAttribute("aria-hidden", "false");
   document.body.classList.add("is-wish-showcase-open");
-  wishGalleryButton.textContent = "收起全部祝福";
+  if (wishGalleryButtonLabel) {
+    wishGalleryButtonLabel.textContent = "收起祝福墙";
+  }
   renderWishGallery();
   requestAnimationFrame(() => {
     wishGalleryPanel.classList.add("is-open");
@@ -734,7 +809,9 @@ function closeWishGallery() {
   wishGalleryPanel.classList.remove("is-open");
   wishGalleryPanel.setAttribute("aria-hidden", "true");
   document.body.classList.remove("is-wish-showcase-open");
-  wishGalleryButton.textContent = "展示全部祝福";
+  if (wishGalleryButtonLabel) {
+    wishGalleryButtonLabel.textContent = "展开祝福墙";
+  }
 
   window.setTimeout(() => {
     if (!wishGalleryPanel.classList.contains("is-open")) {
@@ -1307,6 +1384,108 @@ function celebrateGift(gift) {
   window.setTimeout(() => giftResult.classList.remove("is-celebrating"), 900);
 }
 
+function getGiftChallenge(index) {
+  return giftChallenges[index] || giftChallenges[0];
+}
+
+function setGiftModalView(viewName) {
+  giftQuestionView.hidden = viewName !== "question";
+  giftRewardView.hidden = viewName !== "reward";
+  giftPunishmentView.hidden = viewName !== "punishment";
+}
+
+function openGiftChallenge(index) {
+  const challenge = getGiftChallenge(index);
+  activeGiftIndex = index;
+  giftChallengeModal.hidden = false;
+  giftChallengeModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+  giftChallengeKicker.textContent = challenge.card;
+  giftChallengeTitle.textContent = challenge.title;
+  giftChallengePrompt.textContent = challenge.prompt;
+  giftChallengeFeedback.textContent = "";
+  giftAnswerInput.value = "";
+  setGiftModalView("question");
+
+  requestAnimationFrame(() => {
+    giftChallengeModal.classList.add("is-open");
+    giftAnswerInput.focus();
+  });
+}
+
+function closeGiftChallenge() {
+  giftChallengeModal.classList.remove("is-open");
+  giftChallengeModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+  window.setTimeout(() => {
+    if (!giftChallengeModal.classList.contains("is-open")) {
+      giftChallengeModal.hidden = true;
+    }
+  }, 180);
+}
+
+function normalizeGiftAnswer(value) {
+  return String(value || "").trim().toLowerCase().replace(/\s+/g, "");
+}
+
+function isGiftAnswerCorrect(challenge, value) {
+  const answer = normalizeGiftAnswer(value);
+  const acceptedAnswers = [challenge.answer, ...(challenge.aliases || [])].map(normalizeGiftAnswer);
+  return acceptedAnswers.includes(answer);
+}
+
+function showGiftReward() {
+  const challenge = getGiftChallenge(activeGiftIndex);
+  const gift = document.querySelector(`[data-gift="${activeGiftIndex}"]`);
+  openedGifts.add(activeGiftIndex);
+  gift?.classList.add("is-opened");
+  gift?.querySelector(".gift-action") && (gift.querySelector(".gift-action").textContent = "已解锁");
+  giftRewardKicker.textContent = challenge.card;
+  giftRewardTitle.textContent = challenge.rewardTitle;
+  giftRewardText.textContent = challenge.rewardText;
+  giftResult.textContent = `${challenge.rewardTitle} 已解锁。`;
+
+  if (giftCount) {
+    giftCount.textContent = String(openedGifts.size);
+  }
+
+  celebrateGift(gift || giftSection);
+  setGiftModalView("reward");
+  showElementFireworks(giftChallengeModal, { duration: 900, shells: 6 });
+
+  if (openedGifts.size === giftChallenges.length) {
+    window.setTimeout(() => {
+      releaseGiftConfetti(giftSection);
+      showToast("四张礼物牌都解锁了，奖励可以慢慢兑现。");
+    }, 400);
+  }
+}
+
+function showGiftPunishment() {
+  const challenge = getGiftChallenge(activeGiftIndex);
+  giftPunishmentText.textContent = challenge.punishment;
+  setGiftModalView("punishment");
+}
+
+function submitGiftAnswer() {
+  const challenge = getGiftChallenge(activeGiftIndex);
+
+  if (isGiftAnswerCorrect(challenge, giftAnswerInput.value)) {
+    showGiftReward();
+    return;
+  }
+
+  giftChallengeFeedback.textContent = "答案不对，先完成小处罚再继续。";
+  showGiftPunishment();
+}
+
+function returnToGiftQuestion() {
+  giftChallengeFeedback.textContent = "";
+  giftAnswerInput.value = "";
+  setGiftModalView("question");
+  window.setTimeout(() => giftAnswerInput.focus(), 0);
+}
+
 function releaseCapsuleSparks() {
   const sparkSymbols = ["✦", "✧", "♡", "·"];
 
@@ -1488,22 +1667,20 @@ document.querySelector("#surpriseButton").addEventListener("click", () => {
 document.querySelectorAll("[data-gift]").forEach((gift) => {
   gift.addEventListener("click", () => {
     const index = Number(gift.dataset.gift);
-    openedGifts.add(index);
-    gift.classList.add("is-opened");
-    gift.querySelector(".gift-action").textContent = "已开启";
-    giftResult.textContent = gifts[index];
-    if (giftCount) {
-      giftCount.textContent = String(openedGifts.size);
-    }
-    celebrateGift(gift);
-
-    if (openedGifts.size === gifts.length) {
-      window.setTimeout(() => {
-        releaseGiftConfetti(giftSection);
-        showToast("三份小礼物已收集，结尾烟花可以打开了。");
-      }, 400);
-    }
+    openGiftChallenge(index);
   });
+});
+
+giftAnswerSubmit?.addEventListener("click", submitGiftAnswer);
+giftAnswerInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    submitGiftAnswer();
+  }
+});
+giftPunishmentDone?.addEventListener("click", returnToGiftQuestion);
+giftChallengeCloseButtons.forEach((button) => {
+  button.addEventListener("click", closeGiftChallenge);
 });
 
 capsuleSpinButton?.addEventListener("click", spinCapsuleMachine);
@@ -1511,12 +1688,13 @@ capsuleSpinButton?.addEventListener("click", spinCapsuleMachine);
 certificateButton.addEventListener("click", () => {
   birthdayCertificate.classList.add("is-lit");
   showScreenFireworks({ duration: 1900, shells: 18 });
-  showToast("生日证书已点亮。愿她这一岁，被生活认真偏爱。");
+  showToast("生日证书已点亮，信封里的话也一起封存了。");
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeWishGallery();
+    closeGiftChallenge();
     closeModal();
   }
 });

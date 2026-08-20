@@ -57,6 +57,7 @@ const gestureState = {
   cakeParticles: [],
   cakeUnfoldStartedAt: 0,
   handLandmarker: null,
+  handLandmarkerPromise: null,
   isUnfolded: false,
   isGesturePhotoOpen: false,
   lastPinchAt: 0,
@@ -100,12 +101,48 @@ function initializeGestureStage() {
   resetParticleCake();
   observeParticleCakeVisibility();
   renderPhotoOrbit();
+  scheduleGestureWarmup();
+}
+
+function scheduleGestureWarmup() {
+  const warm = () => {
+    void loadHandLandmarker().catch(() => null);
+  };
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(warm, { timeout: 2500 });
+    return;
+  }
+
+  window.setTimeout(warm, 900);
+}
+
+function resetGestureStageToCake() {
+  window.clearTimeout(gestureState.photoOpenTimer);
+  gestureState.photoOpenTimer = null;
+  gestureState.isGesturePhotoOpen = false;
+  gestureState.isUnfolded = false;
+  gestureState.cakeMode = "cake";
+  gestureState.particleSpinBoost = 0;
+  gestureState.orbitRotation = 0;
+  gestureState.selectedIndex = 0;
+  gestureStage.classList.remove("is-unfolded");
+  gestureStage.style.setProperty("--orbit-shift", "0px");
+  photoCards.forEach((photoCard) => photoCard.classList.remove("is-magnified"));
+  resetParticleCake();
+  renderPhotoOrbit();
+
+  if (gestureState.cakeIsVisible && document.visibilityState !== "hidden") {
+    startParticleCakeRender();
+  }
 }
 
 async function startGestureCamera() {
   if (gestureState.running) {
     return;
   }
+
+  resetGestureStageToCake();
 
   if (!window.isSecureContext) {
     setGestureStatus("摄像头需要 HTTPS。请使用 GitHub Pages 网址或自定义域名访问。", true);
@@ -165,6 +202,7 @@ function stopGestureCamera() {
   gestureState.openPalmHistory = [];
   gestureState.rawGesture = "none";
   gestureState.stableGesture = "none";
+  resetGestureStageToCake();
   gestureCamera.classList.remove("is-active");
   gestureStartButton.disabled = false;
   gestureStopButton.disabled = true;
@@ -174,23 +212,38 @@ function stopGestureCamera() {
 
 async function loadHandLandmarker() {
   if (gestureState.handLandmarker) {
-    return;
+    return gestureState.handLandmarker;
   }
 
-  if (!gestureState.mediaPipeModule) {
-    gestureState.mediaPipeModule = await import(TASKS_VISION_URL);
+  if (gestureState.handLandmarkerPromise) {
+    return gestureState.handLandmarkerPromise;
   }
 
-  const { FilesetResolver, HandLandmarker } = gestureState.mediaPipeModule;
+  gestureState.handLandmarkerPromise = (async () => {
+    if (!gestureState.mediaPipeModule) {
+      gestureState.mediaPipeModule = await import(TASKS_VISION_URL);
+    }
 
-  if (!gestureState.visionTasks) {
-    gestureState.visionTasks = await FilesetResolver.forVisionTasks(TASKS_WASM_URL);
-  }
+    const { FilesetResolver, HandLandmarker } = gestureState.mediaPipeModule;
+
+    if (!gestureState.visionTasks) {
+      gestureState.visionTasks = await FilesetResolver.forVisionTasks(TASKS_WASM_URL);
+    }
+
+    try {
+      gestureState.handLandmarker = await createHandLandmarker(HandLandmarker, "GPU");
+    } catch (gpuError) {
+      gestureState.handLandmarker = await createHandLandmarker(HandLandmarker, "CPU");
+    }
+
+    return gestureState.handLandmarker;
+  })();
 
   try {
-    gestureState.handLandmarker = await createHandLandmarker(HandLandmarker, "GPU");
-  } catch (gpuError) {
-    gestureState.handLandmarker = await createHandLandmarker(HandLandmarker, "CPU");
+    return await gestureState.handLandmarkerPromise;
+  } catch (error) {
+    gestureState.handLandmarkerPromise = null;
+    throw error;
   }
 }
 
