@@ -3,8 +3,9 @@
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
 const resolvedPhotoSources = new Map();
 const photoSourceLookups = new Map();
-const LOGIN_USERNAME = "qyz0904";
-const LOGIN_PASSWORD = "0904qyz";
+// Login credentials for the birthday museum. Change these two values when you want to update the login.
+const LOGIN_USERNAME = "003424";
+const LOGIN_PASSWORD = "aa333333";
 
 let cuteMoments = [
   {
@@ -146,7 +147,8 @@ const giftChallenges = [
     punishment: "对着手机屏幕认真说一声：我是笨蛋。说完再继续答题。",
     rewardText: "凭这张截图，可以兑换一杯喜欢的奶茶，甜度和加料都由她决定。",
     rewardTitle: "一杯奶茶兑换券",
-    title: "甜甜补给牌"
+    title: "甜甜补给牌",
+    cover: "pics/gifts/card-01"
   },
   {
     answer: "曲艺珍",
@@ -156,7 +158,8 @@ const giftChallenges = [
     punishment: "给自己比一个大大的爱心，然后说：我再想想。",
     rewardText: "凭这张截图，可以兑换一次不限时认真陪聊，吐槽、分享、发呆都算。",
     rewardTitle: "陪伴通行证",
-    title: "陪伴通行牌"
+    title: "陪伴通行牌",
+    cover: "pics/gifts/card-02"
   },
   {
     answer: "生日快乐",
@@ -166,7 +169,8 @@ const giftChallenges = [
     punishment: "对着屏幕夸她一句，夸完再回来继续答题。",
     rewardText: "凭这张截图，可以兑换一次快乐补给：想吃什么、想去哪，由她优先选择。",
     rewardTitle: "快乐补给券",
-    title: "快乐召唤牌"
+    title: "快乐召唤牌",
+    cover: "pics/gifts/card-03"
   },
   {
     answer: "喜欢",
@@ -176,7 +180,8 @@ const giftChallenges = [
     punishment: "对着手机屏幕说一声：我是笨蛋，但我还能答对。",
     rewardText: "凭这张截图，可以兑换一个小心愿。合理范围内，送礼人负责认真兑现。",
     rewardTitle: "心愿加成券",
-    title: "心愿加成牌"
+    title: "心愿加成牌",
+    cover: "pics/gifts/card-04"
   }
 ];
 
@@ -275,11 +280,8 @@ const cuteMomentText = document.querySelector("#cuteMomentText");
 const cutePhotoCount = document.querySelector("#cutePhotoCount");
 const cutePreviousButton = document.querySelector("#cutePreviousButton");
 const cuteNextButton = document.querySelector("#cuteNextButton");
-const giftCount = document.querySelector("#giftCount");
-const giftResult = document.querySelector("#giftResult");
 const giftSection = document.querySelector("#gifts");
 const giftExperience = document.querySelector("#giftExperience");
-const giftVaultTicket = document.querySelector("#giftVaultTicket");
 const giftChallengeModal = document.querySelector("#giftChallengeModal");
 const giftQuestionView = document.querySelector("#giftQuestionView");
 const giftRewardView = document.querySelector("#giftRewardView");
@@ -595,8 +597,8 @@ function openPhotoModal(index, collectionName = "album") {
   if (!photo) {
     return;
   }
-
-  openPhotoModalSource(photo.image, photo.alt, photo.caption);
+  const caption = photo.caption || "";
+  openPhotoModalSource(photo.image, photo.alt, caption);
 }
 
 function showToast(message) {
@@ -1349,6 +1351,10 @@ function playCuteRevealEffect() {
 
 function releaseGiftConfetti(gift) {
   const launchPad = giftExperience || gift;
+  if (!launchPad) {
+    return;
+  }
+
   const streamerColors = ["#fff176", "#ff4f8b", "#8b7cf6", "#20c7bf", "#ffffff", "#ff9f1c", "#f72585"];
   launchPad.classList.remove("is-celebrating");
   void launchPad.offsetWidth;
@@ -1370,18 +1376,13 @@ function releaseGiftConfetti(gift) {
 }
 
 function celebrateGift(gift) {
-  const giftName = gift.querySelector("strong")?.textContent || "生日礼物";
-  if (giftVaultTicket) {
-    giftVaultTicket.textContent = giftName;
+  gift?.classList.remove("is-celebrating");
+  if (gift) {
+    void gift.offsetWidth;
+    gift.classList.add("is-celebrating");
+    window.setTimeout(() => gift.classList.remove("is-celebrating"), 900);
   }
-
-  giftExperience?.classList.add("has-opened");
   releaseGiftConfetti(gift);
-
-  giftResult.classList.remove("is-celebrating");
-  void giftResult.offsetWidth;
-  giftResult.classList.add("is-celebrating");
-  window.setTimeout(() => giftResult.classList.remove("is-celebrating"), 900);
 }
 
 function getGiftChallenge(index) {
@@ -1440,14 +1441,10 @@ function showGiftReward() {
   openedGifts.add(activeGiftIndex);
   gift?.classList.add("is-opened");
   gift?.querySelector(".gift-action") && (gift.querySelector(".gift-action").textContent = "已解锁");
+  gift?.setAttribute("aria-label", `${challenge.title}，奖励已解锁`);
   giftRewardKicker.textContent = challenge.card;
   giftRewardTitle.textContent = challenge.rewardTitle;
   giftRewardText.textContent = challenge.rewardText;
-  giftResult.textContent = `${challenge.rewardTitle} 已解锁。`;
-
-  if (giftCount) {
-    giftCount.textContent = String(openedGifts.size);
-  }
 
   celebrateGift(gift || giftSection);
   setGiftModalView("reward");

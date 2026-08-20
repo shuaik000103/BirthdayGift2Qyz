@@ -4095,6 +4095,273 @@ img {
   }
 }
 
+/* Final override for the requested four-card row. */
+.gift-section .gift-vault,
+.gift-section .gift-result {
+  display: none !important;
+}
+
+.gift-section .gift-experience {
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+}
+
+.gift-section .gift-experience .gift-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(14px, 2vw, 22px) !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.gift-section .gift-experience .gift-box {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  min-height: clamp(280px, 28vw, 380px) !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(120, 96, 156, 0.16) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 243, 255, 0.88)) !important;
+  color: #fff !important;
+  box-shadow:
+    0 22px 48px rgba(72, 45, 90, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7) !important;
+  transform: none !important;
+}
+
+.gift-section .gift-experience .gift-box:hover {
+  transform: translateY(-8px) !important;
+}
+
+.gift-section .gift-card-cover {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: inherit !important;
+  z-index: 0 !important;
+}
+
+.gift-section .gift-experience .gift-box::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(29, 22, 46, 0.1) 0%, rgba(29, 22, 46, 0.26) 58%, rgba(29, 22, 46, 0.72) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%) !important;
+}
+
+.gift-section .gift-card-number,
+.gift-section .gift-box strong,
+.gift-section .gift-action {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.gift-section .gift-card-number {
+  padding: 7px 11px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: rgba(255, 255, 255, 0.96) !important;
+  font-size: 12px !important;
+  font-weight: 1000 !important;
+  letter-spacing: 0 !important;
+}
+
+.gift-section .gift-box strong {
+  margin-top: auto !important;
+  color: #fff !important;
+  font-size: clamp(22px, 2.3vw, 30px) !important;
+  line-height: 1.12 !important;
+  text-shadow: 0 2px 12px rgba(22, 11, 36, 0.3) !important;
+}
+
+.gift-section .gift-action {
+  margin-top: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.gift-section .gift-box:nth-child(1) .gift-card-cover {
+  object-position: center 12% !important;
+}
+
+.gift-section .gift-box:nth-child(4) .gift-card-cover {
+  object-position: center 24% !important;
+}
+
+@media (max-width: 1040px) {
+  .gift-section .gift-experience .gift-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .gift-section .gift-experience .gift-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Final gift-card layout override. */
+.gift-vault,
+.gift-result {
+  display: none !important;
+}
+
+.gift-section .gift-experience {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.gift-experience .gift-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(14px, 2vw, 22px);
+  max-width: none;
+  margin: 0;
+}
+
+.gift-experience .gift-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-height: clamp(280px, 28vw, 380px);
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(120, 96, 156, 0.16);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 243, 255, 0.88));
+  color: #fff;
+  box-shadow:
+    0 22px 48px rgba(72, 45, 90, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  transform: none !important;
+}
+
+.gift-experience .gift-box:hover {
+  transform: translateY(-8px) !important;
+  box-shadow:
+    0 28px 60px rgba(72, 45, 90, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.82);
+}
+
+.gift-card-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.gift-experience .gift-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(29, 22, 46, 0.1) 0%, rgba(29, 22, 46, 0.26) 58%, rgba(29, 22, 46, 0.72) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%);
+}
+
+.gift-card-number,
+.gift-experience .gift-box strong,
+.gift-experience .gift-box .gift-action {
+  position: relative;
+  z-index: 1;
+}
+
+.gift-card-number {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.gift-experience .gift-box strong {
+  margin-top: auto;
+  color: #fff;
+  font-size: clamp(22px, 2.3vw, 30px);
+  line-height: 1.12;
+  text-shadow: 0 2px 12px rgba(22, 11, 36, 0.3);
+}
+
+.gift-experience .gift-box .gift-action {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.gift-experience .gift-box.is-opened .gift-action {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.gift-experience .gift-box:nth-child(1) {
+  --card-tilt: -2deg;
+}
+
+.gift-experience .gift-box:nth-child(2) {
+  --card-tilt: -0.5deg;
+}
+
+.gift-experience .gift-box:nth-child(3) {
+  --card-tilt: 0.5deg;
+}
+
+.gift-experience .gift-box:nth-child(4) {
+  --card-tilt: 2deg;
+}
+
+.gift-experience .gift-box:nth-child(1) .gift-card-cover {
+  object-position: center 12%;
+}
+
+.gift-experience .gift-box:nth-child(2) .gift-card-cover {
+  object-position: center center;
+}
+
+.gift-experience .gift-box:nth-child(3) .gift-card-cover {
+  object-position: center center;
+}
+
+.gift-experience .gift-box:nth-child(4) .gift-card-cover {
+  object-position: center 24%;
+}
+
+@media (max-width: 1040px) {
+  .gift-experience .gift-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .gift-experience .gift-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 .polaroid img {
   width: 100% !important;
   height: 100% !important;
@@ -8253,6 +8520,10 @@ img {
 }
 
 /* EOF overrides */
+.polaroid {
+  padding: 12px !important;
+}
+
 .polaroid img {
   width: 100% !important;
   height: 100% !important;
@@ -8262,37 +8533,123 @@ img {
   background: linear-gradient(135deg, rgba(255, 250, 245, 0.96), rgba(248, 244, 255, 0.9)) !important;
 }
 
-.gift-grid,
-.gift-experience .gift-grid {
-  grid-template-columns: repeat(4, minmax(180px, 1fr)) !important;
+.polaroid span {
+  display: none !important;
 }
 
-.gift-box {
-  min-height: clamp(270px, 28vw, 360px) !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(247, 244, 255, 0.9)) padding-box, linear-gradient(135deg, #f5d69a, #ec8da2 45%, #7b74e8) border-box !important;
-  transform: rotate(var(--card-tilt, 0deg)) !important;
+.gift-section .gift-vault,
+.gift-section .gift-result {
+  display: none !important;
 }
 
-.gift-box:nth-child(1) { --card-tilt: -4deg; }
-.gift-box:nth-child(2) { --card-tilt: -1.2deg; }
-.gift-box:nth-child(3) { --card-tilt: 1.2deg; }
-.gift-box:nth-child(4) { --card-tilt: 4deg; }
+.gift-section .gift-experience {
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+}
 
-.gift-box .gift-token { background: linear-gradient(135deg, #44234e, #ec8da2) !important; }
-.gift-box:nth-child(2) .gift-token { background: linear-gradient(135deg, #0c656c, #1f9b9a) !important; }
-.gift-box:nth-child(3) .gift-token { background: linear-gradient(135deg, #665c9e, #f5d69a) !important; }
-.gift-box:nth-child(4) .gift-token { background: linear-gradient(135deg, #b74b69, #ff9f1c) !important; }
+.gift-section .gift-experience .gift-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(14px, 2vw, 22px) !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.gift-section .gift-experience .gift-box {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  min-height: clamp(280px, 28vw, 380px) !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(120, 96, 156, 0.16) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 243, 255, 0.88)) !important;
+  color: #fff !important;
+  box-shadow:
+    0 22px 48px rgba(72, 45, 90, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7) !important;
+  transform: none !important;
+}
+
+.gift-section .gift-experience .gift-box:hover {
+  transform: translateY(-8px) !important;
+}
+
+.gift-section .gift-card-cover {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: inherit !important;
+  z-index: 0 !important;
+}
+
+.gift-section .gift-experience .gift-box::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(29, 22, 46, 0.1) 0%, rgba(29, 22, 46, 0.26) 58%, rgba(29, 22, 46, 0.72) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%) !important;
+}
+
+.gift-section .gift-card-number,
+.gift-section .gift-box strong,
+.gift-section .gift-action {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.gift-section .gift-card-number {
+  padding: 7px 11px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: rgba(255, 255, 255, 0.96) !important;
+  font-size: 12px !important;
+  font-weight: 1000 !important;
+  letter-spacing: 0 !important;
+}
+
+.gift-section .gift-box strong {
+  margin-top: auto !important;
+  color: #fff !important;
+  font-size: clamp(22px, 2.3vw, 30px) !important;
+  line-height: 1.12 !important;
+  text-shadow: 0 2px 12px rgba(22, 11, 36, 0.3) !important;
+}
+
+.gift-section .gift-action {
+  margin-top: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.gift-section .gift-box:nth-child(1) .gift-card-cover {
+  object-position: center 12% !important;
+}
+
+.gift-section .gift-box:nth-child(4) .gift-card-cover {
+  object-position: center 24% !important;
+}
 
 @media (max-width: 1040px) {
-  .gift-grid,
-  .gift-experience .gift-grid {
-    grid-template-columns: repeat(2, minmax(190px, 1fr)) !important;
+  .gift-section .gift-experience .gift-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
-@media (max-width: 620px) {
-  .gift-grid,
-  .gift-experience .gift-grid {
+@media (max-width: 640px) {
+  .gift-section .gift-experience .gift-grid {
     grid-template-columns: 1fr !important;
   }
 }
