@@ -6,24 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="eae04ab9-f4df-447c-94a3-317eaaa54423" name="更改" comment="去除解密功能">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gesture.js" beforeDir="false" afterPath="$PROJECT_DIR$/gesture.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/pics/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/album/01.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/album/02.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/album/03.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/album/04.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/cute/01.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/cute/02.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/cute/03.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/cute/04.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/cute/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/pics/cute/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/timeline/2021.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/timeline/2022.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/timeline/2023.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/timeline/2026.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/timeline/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/pics/timeline/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pics/gifts/card-01.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pics/gifts/card-01.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,7 +16,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="2417" />
+    <option name="cachedIndexableFilesCount" value="2449" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">

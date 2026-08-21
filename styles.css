@@ -4102,14 +4102,25 @@ img {
 }
 
 .gift-section .gift-experience {
-  max-width: 1240px !important;
+  display: block !important;
+  max-width: min(100%, 1540px) !important;
   margin: 0 auto !important;
+  padding-inline: clamp(14px, 2vw, 24px) !important;
+}
+
+.gift-section .section-heading {
+  margin-bottom: 8px !important;
+}
+
+.gift-section .section-heading h2 {
+  font-size: clamp(17px, 1.55vw, 22px) !important;
+  line-height: 1.1 !important;
 }
 
 .gift-section .gift-experience .gift-grid {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: clamp(14px, 2vw, 22px) !important;
+  gap: clamp(12px, 1.1vw, 18px) !important;
   max-width: none !important;
   margin: 0 !important;
 }
@@ -4120,16 +4131,18 @@ img {
   flex-direction: column !important;
   justify-content: flex-end !important;
   align-items: flex-start !important;
-  min-height: clamp(280px, 28vw, 380px) !important;
-  padding: 18px !important;
+  width: 100% !important;
+  aspect-ratio: 1125 / 2434 !important;
+  min-height: clamp(600px, 76vh, 880px) !important;
+  padding: 14px !important;
   overflow: hidden !important;
   border: 1px solid rgba(120, 96, 156, 0.16) !important;
-  border-radius: 18px !important;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 243, 255, 0.88)) !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 244, 255, 0.9)) !important;
   color: #fff !important;
   box-shadow:
-    0 22px 48px rgba(72, 45, 90, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.7) !important;
+    0 18px 40px rgba(72, 45, 90, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.76) !important;
   transform: none !important;
 }
 
@@ -4154,8 +4167,8 @@ img {
   inset: 0 !important;
   z-index: 0 !important;
   background:
-    linear-gradient(180deg, rgba(29, 22, 46, 0.1) 0%, rgba(29, 22, 46, 0.26) 58%, rgba(29, 22, 46, 0.72) 100%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%) !important;
+    linear-gradient(180deg, rgba(29, 22, 46, 0.06) 0%, rgba(29, 22, 46, 0.18) 56%, rgba(29, 22, 46, 0.56) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 44%) !important;
 }
 
 .gift-section .gift-card-number,
@@ -4166,7 +4179,7 @@ img {
 }
 
 .gift-section .gift-card-number {
-  padding: 7px 11px !important;
+  padding: 6px 10px !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.22) !important;
   color: rgba(255, 255, 255, 0.96) !important;
@@ -4178,18 +4191,18 @@ img {
 .gift-section .gift-box strong {
   margin-top: auto !important;
   color: #fff !important;
-  font-size: clamp(22px, 2.3vw, 30px) !important;
+  font-size: clamp(20px, 2vw, 28px) !important;
   line-height: 1.12 !important;
   text-shadow: 0 2px 12px rgba(22, 11, 36, 0.3) !important;
 }
 
 .gift-section .gift-action {
-  margin-top: 12px !important;
-  padding: 8px 12px !important;
+  margin-top: 10px !important;
+  padding: 7px 11px !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.18) !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 900 !important;
 }
 
@@ -4210,6 +4223,10 @@ img {
 @media (max-width: 640px) {
   .gift-section .gift-experience .gift-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .gift-section .gift-experience {
+    padding-inline: 4px !important;
   }
 }
 
@@ -8537,20 +8554,41 @@ img {
   display: none !important;
 }
 
+.gift-section.page-section {
+  padding: clamp(38px, 5vh, 56px) clamp(28px, 3.8vw, 56px) clamp(52px, 6vh, 72px) !important;
+}
+
 .gift-section .gift-vault,
 .gift-section .gift-result {
   display: none !important;
 }
 
 .gift-section .gift-experience {
-  max-width: 1240px !important;
+  display: block !important;
+  max-width: min(100%, 1600px) !important;
   margin: 0 auto !important;
+  padding-inline: clamp(10px, 1.4vw, 20px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.gift-section .section-heading {
+  justify-content: flex-start !important;
+  margin-bottom: clamp(12px, 1.6vh, 18px) !important;
+  text-align: left !important;
+}
+
+.gift-section .section-heading h2 {
+  font-size: clamp(17px, 1.55vw, 22px) !important;
+  line-height: 1.1 !important;
 }
 
 .gift-section .gift-experience .gift-grid {
   display: grid !important;
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: clamp(14px, 2vw, 22px) !important;
+  gap: clamp(14px, 1.4vw, 22px) !important;
   max-width: none !important;
   margin: 0 !important;
 }
@@ -8561,16 +8599,18 @@ img {
   flex-direction: column !important;
   justify-content: flex-end !important;
   align-items: flex-start !important;
-  min-height: clamp(280px, 28vw, 380px) !important;
-  padding: 18px !important;
+  width: 100% !important;
+  aspect-ratio: 1125 / 2434 !important;
+  min-height: auto !important;
+  padding: 14px !important;
   overflow: hidden !important;
   border: 1px solid rgba(120, 96, 156, 0.16) !important;
-  border-radius: 18px !important;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(247, 243, 255, 0.88)) !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 244, 255, 0.9)) !important;
   color: #fff !important;
   box-shadow:
-    0 22px 48px rgba(72, 45, 90, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.7) !important;
+    0 18px 40px rgba(72, 45, 90, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.76) !important;
   transform: none !important;
 }
 
@@ -8595,8 +8635,8 @@ img {
   inset: 0 !important;
   z-index: 0 !important;
   background:
-    linear-gradient(180deg, rgba(29, 22, 46, 0.1) 0%, rgba(29, 22, 46, 0.26) 58%, rgba(29, 22, 46, 0.72) 100%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 44%) !important;
+    linear-gradient(180deg, rgba(29, 22, 46, 0.06) 0%, rgba(29, 22, 46, 0.18) 56%, rgba(29, 22, 46, 0.56) 100%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 44%) !important;
 }
 
 .gift-section .gift-card-number,
@@ -8619,18 +8659,18 @@ img {
 .gift-section .gift-box strong {
   margin-top: auto !important;
   color: #fff !important;
-  font-size: clamp(22px, 2.3vw, 30px) !important;
+  font-size: clamp(20px, 2vw, 28px) !important;
   line-height: 1.12 !important;
   text-shadow: 0 2px 12px rgba(22, 11, 36, 0.3) !important;
 }
 
 .gift-section .gift-action {
-  margin-top: 12px !important;
-  padding: 8px 12px !important;
+  margin-top: 10px !important;
+  padding: 7px 11px !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.18) !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 900 !important;
 }
 
@@ -8651,5 +8691,9 @@ img {
 @media (max-width: 640px) {
   .gift-section .gift-experience .gift-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .gift-section .gift-experience .gift-box {
+    min-height: auto !important;
   }
 }
