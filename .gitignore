@@ -1,3 +1,7 @@
 # Local QA artifacts.
 qa/
 output/
+
+# Local browser profile and visual-check screenshots.
+work-edge-profile/
+work/*.png
