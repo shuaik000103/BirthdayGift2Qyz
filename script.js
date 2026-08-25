@@ -256,6 +256,7 @@ const musicToggleText = document.querySelector("#musicToggleText");
 const musicTrackLabel = document.querySelector("#musicTrackLabel");
 const cuteMusicToggle = document.querySelector("#cuteMusicToggle");
 const cuteMusicToggleText = document.querySelector("#cuteMusicToggleText");
+const loginBackgroundVideo = document.querySelector(".login-background-video");
 const wishCard = document.querySelector("#wishCard");
 const wishButton = document.querySelector("#wishButton");
 const wishGalleryButton = document.querySelector("#wishGalleryButton");
@@ -371,6 +372,64 @@ function pauseAllMusic() {
   birthdayMusic.pause();
   cuteMusic.pause();
   updateMusicControls();
+}
+
+function preloadHighQualityLoginBackground() {
+  const hdSource = loginBackgroundVideo?.dataset.hdSrc;
+  if (!hdSource || loginBackgroundVideo.dataset.hdPreloadStarted === "true") {
+    return;
+  }
+
+  loginBackgroundVideo.dataset.hdPreloadStarted = "true";
+  const hdVideo = document.createElement("video");
+  hdVideo.muted = true;
+  hdVideo.playsInline = true;
+  hdVideo.preload = "auto";
+  hdVideo.setAttribute("aria-hidden", "true");
+  hdVideo.style.cssText = "position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;";
+  hdVideo.src = hdSource;
+
+  hdVideo.addEventListener(
+    "canplay",
+    () => {
+      const previewTime = Number.isFinite(loginBackgroundVideo.currentTime)
+        ? loginBackgroundVideo.currentTime
+        : 0;
+
+      loginBackgroundVideo.pause();
+      loginBackgroundVideo.src = hdSource;
+      loginBackgroundVideo.load();
+      loginBackgroundVideo.addEventListener(
+        "loadedmetadata",
+        () => {
+          if (previewTime < loginBackgroundVideo.duration) {
+            loginBackgroundVideo.currentTime = previewTime;
+          }
+          loginBackgroundVideo.play().catch(() => {});
+        },
+        { once: true }
+      );
+      hdVideo.remove();
+    },
+    { once: true }
+  );
+
+  document.body.appendChild(hdVideo);
+  hdVideo.load();
+}
+
+function restartMusicFromBeginning(audio) {
+  try {
+    audio.currentTime = 0;
+  } catch {
+    audio.addEventListener(
+      "loadedmetadata",
+      () => {
+        audio.currentTime = 0;
+      },
+      { once: true }
+    );
+  }
 }
 
 function switchMusicMode(mode, shouldPlay = true) {
@@ -1799,6 +1858,7 @@ cuteMusicToggle.addEventListener("click", () => {
   if (activeMusicMode === "cute" && !cuteMusic.paused) {
     pauseAllMusic();
   } else {
+    restartMusicFromBeginning(cuteMusic);
     switchMusicMode("cute");
   }
 });
@@ -1824,6 +1884,7 @@ window.addEventListener("resize", handleWindowResize);
 handleWindowResize();
 setHeaderState();
 animateParticles();
+window.setTimeout(preloadHighQualityLoginBackground, 700);
 loadWishImageManifest();
 renderPhotoGroupLists();
 loadPhotoGroupManifests();
