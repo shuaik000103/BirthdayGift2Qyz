@@ -1,6 +1,15 @@
 ﻿const LOGIN_SESSION_KEY = "birthdayMuseumLoggedIn";
 
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
+const PHOTO_EXTENSION_HINTS = [
+  ["pics/gesture/", "png"],
+  ["pics/album/", "png"],
+  ["pics/certificate/", "png"],
+  ["pics/cute/", "jpg"],
+  ["pics/gifts/", "jpg"],
+  ["pics/roco/", "jpg"],
+  ["pics/timeline/", "jpg"]
+];
 const resolvedPhotoSources = new Map();
 const photoSourceLookups = new Map();
 // Login credentials for the birthday museum. Change these two values when you want to update the login.
@@ -256,7 +265,6 @@ const musicToggleText = document.querySelector("#musicToggleText");
 const musicTrackLabel = document.querySelector("#musicTrackLabel");
 const cuteMusicToggle = document.querySelector("#cuteMusicToggle");
 const cuteMusicToggleText = document.querySelector("#cuteMusicToggleText");
-const loginBackgroundVideo = document.querySelector(".login-background-video");
 const wishCard = document.querySelector("#wishCard");
 const wishButton = document.querySelector("#wishButton");
 const wishGalleryButton = document.querySelector("#wishGalleryButton");
@@ -374,50 +382,6 @@ function pauseAllMusic() {
   updateMusicControls();
 }
 
-function preloadHighQualityLoginBackground() {
-  const hdSource = loginBackgroundVideo?.dataset.hdSrc;
-  if (!hdSource || loginBackgroundVideo.dataset.hdPreloadStarted === "true") {
-    return;
-  }
-
-  loginBackgroundVideo.dataset.hdPreloadStarted = "true";
-  const hdVideo = document.createElement("video");
-  hdVideo.muted = true;
-  hdVideo.playsInline = true;
-  hdVideo.preload = "auto";
-  hdVideo.setAttribute("aria-hidden", "true");
-  hdVideo.style.cssText = "position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;";
-  hdVideo.src = hdSource;
-
-  hdVideo.addEventListener(
-    "canplay",
-    () => {
-      const previewTime = Number.isFinite(loginBackgroundVideo.currentTime)
-        ? loginBackgroundVideo.currentTime
-        : 0;
-
-      loginBackgroundVideo.pause();
-      loginBackgroundVideo.src = hdSource;
-      loginBackgroundVideo.load();
-      loginBackgroundVideo.addEventListener(
-        "loadedmetadata",
-        () => {
-          if (previewTime < loginBackgroundVideo.duration) {
-            loginBackgroundVideo.currentTime = previewTime;
-          }
-          loginBackgroundVideo.play().catch(() => {});
-        },
-        { once: true }
-      );
-      hdVideo.remove();
-    },
-    { once: true }
-  );
-
-  document.body.appendChild(hdVideo);
-  hdVideo.load();
-}
-
 function restartMusicFromBeginning(audio) {
   try {
     audio.currentTime = 0;
@@ -492,8 +456,18 @@ function getPhotoBase(source) {
   return String(source || "").replace(new RegExp(`\\.(${IMAGE_EXTENSIONS.join("|")})(?:[?#].*)?$`, "i"), "");
 }
 
+function getPreferredPhotoSource(source) {
+  const value = String(source || "");
+  if (!value || hasSupportedImageExtension(value)) {
+    return value;
+  }
+
+  const hint = PHOTO_EXTENSION_HINTS.find(([directory]) => value.startsWith(directory));
+  return hint ? `${value}.${hint[1]}` : null;
+}
+
 function resolvePhotoUrl(source) {
-  return resolvedPhotoSources.get(getPhotoBase(source)) || source;
+  return resolvedPhotoSources.get(getPhotoBase(source)) || getPreferredPhotoSource(source) || source;
 }
 
 function probePhotoSource(source) {
@@ -510,9 +484,22 @@ function findPhotoSource(source) {
     return Promise.resolve(source);
   }
 
+  if (hasSupportedImageExtension(source)) {
+    resolvedPhotoSources.set(getPhotoBase(source), source);
+    return Promise.resolve(source);
+  }
+
   const basePath = getPhotoBase(source);
   if (photoSourceLookups.has(basePath)) {
     return photoSourceLookups.get(basePath);
+  }
+
+  const preferredSource = getPreferredPhotoSource(source);
+  if (preferredSource && preferredSource !== source) {
+    resolvedPhotoSources.set(basePath, preferredSource);
+    const lookup = Promise.resolve(preferredSource);
+    photoSourceLookups.set(basePath, lookup);
+    return lookup;
   }
 
   const lookup = (async () => {
@@ -665,17 +652,13 @@ async function loadPhotoGroupManifests() {
 
 async function loadAdaptivePhotoSources() {
   const pageImages = [...document.querySelectorAll("[data-photo-base]")];
-  const imageBases = [
-    ...pageImages.map((image) => image.dataset.photoBase),
-    ...stories.flatMap(getGroupPhotos),
-    ...cuteMoments.flatMap(getGroupPhotos),
-    ...albumPhotos.map((photo) => photo.image),
-    ...gesturePhotos.map((photo) => photo.image)
-  ];
+  const imageBases = [...new Set(pageImages.map((image) => image.dataset.photoBase))];
 
   await Promise.all(imageBases.map((source) => findPhotoSource(source)));
 
   pageImages.forEach((image) => {
+    image.loading = "lazy";
+    image.decoding = "async";
     const source = resolvePhotoUrl(image.dataset.photoBase);
     if (source !== image.dataset.photoBase) {
       image.src = source;
@@ -900,6 +883,8 @@ function renderWishGallery() {
     galleryItem.setAttribute("aria-label", entry.caption);
 
     const image = document.createElement("img");
+    image.loading = "lazy";
+    image.decoding = "async";
     image.src = resolvePhotoUrl(entry.image);
     image.alt = entry.alt;
     galleryItem.appendChild(image);
@@ -972,7 +957,9 @@ async function loadWishImageManifest() {
     updateWishLoadState("");
   }
 
-  renderWishGallery();
+  if (!wishGalleryPanel.hidden) {
+    renderWishGallery();
+  }
 }
 
 function easeOutCubic(progress) {
@@ -1884,7 +1871,6 @@ window.addEventListener("resize", handleWindowResize);
 handleWindowResize();
 setHeaderState();
 animateParticles();
-window.setTimeout(preloadHighQualityLoginBackground, 700);
 loadWishImageManifest();
 renderPhotoGroupLists();
 loadPhotoGroupManifests();
