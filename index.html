@@ -13,6 +13,9 @@
     <canvas id="sparkles" aria-hidden="true"></canvas>
 
     <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
+      <video class="login-background-video" autoplay muted loop playsinline preload="auto" poster="pics/login-bg/login-bg.png" aria-hidden="true">
+        <source src="pics/login-bg/login-bg-hd.mp4" type="video/mp4" />
+      </video>
       <div class="login-backdrop" aria-hidden="true">
         <span class="login-star star-a"></span>
         <span class="login-star star-b"></span>
@@ -54,6 +57,22 @@
           <a href="#certificate">证书</a>
         </nav>
       </header>
+
+      <aside class="music-dock" id="musicDock" aria-label="背景音乐控制">
+        <div class="music-dock-copy">
+          <span>背景音乐</span>
+          <strong id="musicTrackLabel">生日歌</strong>
+        </div>
+        <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false" aria-label="播放背景音乐">
+          <svg class="music-toggle-icon music-toggle-icon-play" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m9 5 10 7-10 7V5Z" />
+          </svg>
+          <svg class="music-toggle-icon music-toggle-icon-pause" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 5v14M17 5v14" />
+          </svg>
+          <span id="musicToggleText">播放</span>
+        </button>
+      </aside>
 
       <main id="top">
         <section class="hero page-section" aria-labelledby="hero-title">
@@ -183,6 +202,17 @@
                 <div>
                   <h3>可爱瞬间馆 <span>♡</span></h3>
                 </div>
+                <button class="cute-music-toggle" id="cuteMusicToggle" type="button" aria-pressed="false" aria-label="播放可爱瞬间馆音乐">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 18V5l10-2v13M9 8l10-2" />
+                    <circle cx="6.5" cy="18" r="3" />
+                    <circle cx="16.5" cy="16" r="3" />
+                  </svg>
+                  <span>
+                    <strong>馆内音乐</strong>
+                    <small id="cuteMusicToggleText">播放可爱馆音乐</small>
+                  </span>
+                </button>
               </div>
               <div class="cute-moment-list" id="cuteMomentList" role="list" aria-label="可爱瞬间列表"></div>
             </div>
@@ -344,10 +374,10 @@
               <p class="gift-challenge-kicker" id="giftChallengeKicker">CARD 01</p>
               <h3 id="giftChallengeTitle">礼物题目</h3>
               <p class="gift-challenge-prompt" id="giftChallengePrompt"></p>
-              <label class="gift-answer-field">
-                <span>你的答案</span>
-                <input id="giftAnswerInput" type="text" autocomplete="off" />
-              </label>
+              <div class="gift-answer-field">
+                <span>请选择答案</span>
+                <div class="gift-options" id="giftOptions" role="radiogroup" aria-label="礼物题目选项"></div>
+              </div>
               <p class="gift-challenge-feedback" id="giftChallengeFeedback" aria-live="polite"></p>
               <div class="gift-challenge-actions">
                 <button class="gift-answer-submit" id="giftAnswerSubmit" type="button">提交答案</button>
@@ -512,6 +542,13 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <audio id="birthdayMusic" loop preload="metadata">
+      <source src="pics/music/birthday_song.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="cuteMusic" loop preload="metadata">
+      <source src="pics/music/love_105_degrees_of_you.mp3" type="audio/mpeg" />
+    </audio>
 
     <script src="script.js"></script>
     <script type="module" src="gesture.js"></script>

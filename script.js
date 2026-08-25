@@ -139,11 +139,13 @@ const DEFAULT_WISH_BASE_PATH = "wishes/friends/";
 const TIMELINE_MANIFEST_URL = "pics/timeline/manifest.json";
 const CUTE_MANIFEST_URL = "pics/cute/manifest.json";
 
+// Gift quiz settings: edit prompt/options/answer here. Keep answer identical to one option.
 const giftChallenges = [
   {
     answer: "0904",
+    options: ["0904", "0814", "0924", "1004"],
     card: "CARD 01",
-    prompt: "她的生日是几月几号？请输入 4 位数字。",
+    prompt: "她的生日是几月几号？请选择正确答案。",
     punishment: "对着手机屏幕认真说一声：我是笨蛋。说完再继续答题。",
     rewardText: "凭这张截图，可以兑换一杯喜欢的奶茶，甜度和加料都由她决定。",
     rewardTitle: "一杯奶茶兑换券",
@@ -152,9 +154,9 @@ const giftChallenges = [
   },
   {
     answer: "曲艺珍",
-    aliases: ["qyz"],
+    options: ["曲艺珍", "曲艺真", "艺珍", "QYZ"],
     card: "CARD 02",
-    prompt: "今日主角的名字是什么？中文或首字母都可以。",
+    prompt: "今日主角的名字是什么？请选择正确答案。",
     punishment: "给自己比一个大大的爱心，然后说：我再想想。",
     rewardText: "凭这张截图，可以兑换一次不限时认真陪聊，吐槽、分享、发呆都算。",
     rewardTitle: "陪伴通行证",
@@ -163,9 +165,9 @@ const giftChallenges = [
   },
   {
     answer: "生日快乐",
-    aliases: ["happy birthday"],
+    options: ["生日快乐", "天天开心", "心想事成", "恭喜发财"],
     card: "CARD 03",
-    prompt: "今天最应该对她说的四个字是什么？",
+    prompt: "今天最应该对她说的四个字是什么？请选择正确答案。",
     punishment: "对着屏幕夸她一句，夸完再回来继续答题。",
     rewardText: "凭这张截图，可以兑换一次快乐补给：想吃什么、想去哪，由她优先选择。",
     rewardTitle: "快乐补给券",
@@ -174,9 +176,9 @@ const giftChallenges = [
   },
   {
     answer: "喜欢",
-    aliases: ["喜欢你", "love"],
+    options: ["喜欢", "想念", "勇敢", "出发"],
     card: "CARD 04",
-    prompt: "这份礼物最想表达的两个字是什么？",
+    prompt: "这份礼物最想表达的两个字是什么？请选择正确答案。",
     punishment: "对着手机屏幕说一声：我是笨蛋，但我还能答对。",
     rewardText: "凭这张截图，可以兑换一个小心愿。合理范围内，送礼人负责认真兑现。",
     rewardTitle: "心愿加成券",
@@ -247,6 +249,13 @@ const photoModalImage = document.querySelector("#photoModalImage");
 const photoCaption = document.querySelector("#photoCaption");
 const toast = document.querySelector("#toast");
 const header = document.querySelector(".site-header");
+const birthdayMusic = document.querySelector("#birthdayMusic");
+const cuteMusic = document.querySelector("#cuteMusic");
+const musicToggle = document.querySelector("#musicToggle");
+const musicToggleText = document.querySelector("#musicToggleText");
+const musicTrackLabel = document.querySelector("#musicTrackLabel");
+const cuteMusicToggle = document.querySelector("#cuteMusicToggle");
+const cuteMusicToggleText = document.querySelector("#cuteMusicToggleText");
 const wishCard = document.querySelector("#wishCard");
 const wishButton = document.querySelector("#wishButton");
 const wishGalleryButton = document.querySelector("#wishGalleryButton");
@@ -289,7 +298,7 @@ const giftPunishmentView = document.querySelector("#giftPunishmentView");
 const giftChallengeKicker = document.querySelector("#giftChallengeKicker");
 const giftChallengeTitle = document.querySelector("#giftChallengeTitle");
 const giftChallengePrompt = document.querySelector("#giftChallengePrompt");
-const giftAnswerInput = document.querySelector("#giftAnswerInput");
+const giftOptions = document.querySelector("#giftOptions");
 const giftAnswerSubmit = document.querySelector("#giftAnswerSubmit");
 const giftChallengeFeedback = document.querySelector("#giftChallengeFeedback");
 const giftRewardKicker = document.querySelector("#giftRewardKicker");
@@ -315,6 +324,7 @@ let activeTimelinePhotoIndex = 0;
 let activeCuteMomentIndex = 0;
 let activeCutePhotoIndex = 0;
 let activeGiftIndex = 0;
+let activeMusicMode = "birthday";
 const wishTextEntries = wishTextFallbacks.map((text, index) => ({
   key: `text-${index}`,
   text,
@@ -334,6 +344,56 @@ const MAX_FIREWORK_SHELLS = 10;
 const MAX_FIREWORK_PARTICLES = 680;
 const FIREWORK_FRAME_INTERVAL = 1000 / 45;
 
+function getActiveMusic() {
+  return activeMusicMode === "cute" ? cuteMusic : birthdayMusic;
+}
+
+function updateMusicControls() {
+  const activeMusic = getActiveMusic();
+  const isPlaying = !activeMusic.paused;
+  const trackLabel = activeMusicMode === "cute" ? "可爱馆音乐" : "生日歌";
+  const cuteIsPlaying = activeMusicMode === "cute" && !cuteMusic.paused;
+
+  musicTrackLabel.textContent = trackLabel;
+  musicToggleText.textContent = activeMusicMode === "cute" ? "播放生日歌" : isPlaying ? "暂停" : "播放";
+  musicToggle.setAttribute("aria-pressed", String(isPlaying));
+  musicToggle.setAttribute(
+    "aria-label",
+    activeMusicMode === "cute" ? "切换并播放生日歌" : `${isPlaying ? "暂停" : "播放"}生日歌`
+  );
+  musicToggle.classList.toggle("is-playing", isPlaying && activeMusicMode === "birthday");
+  cuteMusicToggle.setAttribute("aria-pressed", String(cuteIsPlaying));
+  cuteMusicToggleText.textContent = cuteIsPlaying ? "暂停可爱馆音乐" : "播放可爱馆音乐";
+  cuteMusicToggle.classList.toggle("is-active", cuteIsPlaying);
+}
+
+function pauseAllMusic() {
+  birthdayMusic.pause();
+  cuteMusic.pause();
+  updateMusicControls();
+}
+
+function switchMusicMode(mode, shouldPlay = true) {
+  activeMusicMode = mode === "cute" ? "cute" : "birthday";
+  const activeMusic = getActiveMusic();
+  const inactiveMusic = activeMusic === birthdayMusic ? cuteMusic : birthdayMusic;
+
+  inactiveMusic.pause();
+  activeMusic.volume = 0.36;
+  updateMusicControls();
+
+  if (!shouldPlay) {
+    activeMusic.pause();
+    updateMusicControls();
+    return;
+  }
+
+  activeMusic.play().catch(() => {
+    updateMusicControls();
+  });
+  updateMusicControls();
+}
+
 function setHeaderState() {
   header.classList.toggle("is-scrolled", window.scrollY > 24);
 }
@@ -345,6 +405,8 @@ function enterMuseum(options = {}) {
   siteShell.classList.add("is-ready");
   siteShell.setAttribute("aria-hidden", "false");
   document.body.classList.remove("is-locked");
+  activeMusicMode = "birthday";
+  pauseAllMusic();
 
   if (!shouldAnimate) {
     return;
@@ -1395,6 +1457,31 @@ function setGiftModalView(viewName) {
   giftPunishmentView.hidden = viewName !== "punishment";
 }
 
+function renderGiftOptions(challenge) {
+  if (!giftOptions) {
+    return;
+  }
+
+  giftOptions.replaceChildren();
+  challenge.options.forEach((option, index) => {
+    const value = typeof option === "string" ? option : option.value;
+    const labelText = typeof option === "string" ? option : option.label;
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    const text = document.createElement("span");
+
+    label.className = "gift-option";
+    input.type = "radio";
+    input.name = "giftAnswer";
+    input.value = value;
+    input.id = `giftAnswerOption-${index}`;
+    text.textContent = labelText;
+
+    label.append(input, text);
+    giftOptions.append(label);
+  });
+}
+
 function openGiftChallenge(index) {
   const challenge = getGiftChallenge(index);
   activeGiftIndex = index;
@@ -1405,12 +1492,12 @@ function openGiftChallenge(index) {
   giftChallengeTitle.textContent = challenge.title;
   giftChallengePrompt.textContent = challenge.prompt;
   giftChallengeFeedback.textContent = "";
-  giftAnswerInput.value = "";
+  renderGiftOptions(challenge);
   setGiftModalView("question");
 
   requestAnimationFrame(() => {
     giftChallengeModal.classList.add("is-open");
-    giftAnswerInput.focus();
+    giftOptions?.querySelector("input")?.focus();
   });
 }
 
@@ -1466,8 +1553,14 @@ function showGiftPunishment() {
 
 function submitGiftAnswer() {
   const challenge = getGiftChallenge(activeGiftIndex);
+  const selectedOption = giftOptions?.querySelector('input[name="giftAnswer"]:checked');
 
-  if (isGiftAnswerCorrect(challenge, giftAnswerInput.value)) {
+  if (!selectedOption) {
+    giftChallengeFeedback.textContent = "请先选择一个答案。";
+    return;
+  }
+
+  if (isGiftAnswerCorrect(challenge, selectedOption.value)) {
     showGiftReward();
     return;
   }
@@ -1478,9 +1571,11 @@ function submitGiftAnswer() {
 
 function returnToGiftQuestion() {
   giftChallengeFeedback.textContent = "";
-  giftAnswerInput.value = "";
+  giftOptions?.querySelectorAll('input[name="giftAnswer"]').forEach((input) => {
+    input.checked = false;
+  });
   setGiftModalView("question");
-  window.setTimeout(() => giftAnswerInput.focus(), 0);
+  window.setTimeout(() => giftOptions?.querySelector("input")?.focus(), 0);
 }
 
 function releaseCapsuleSparks() {
@@ -1669,12 +1764,6 @@ document.querySelectorAll("[data-gift]").forEach((gift) => {
 });
 
 giftAnswerSubmit?.addEventListener("click", submitGiftAnswer);
-giftAnswerInput?.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    submitGiftAnswer();
-  }
-});
 giftPunishmentDone?.addEventListener("click", returnToGiftQuestion);
 giftChallengeCloseButtons.forEach((button) => {
   button.addEventListener("click", closeGiftChallenge);
@@ -1695,6 +1784,31 @@ document.addEventListener("keydown", (event) => {
     closeModal();
   }
 });
+
+musicToggle.addEventListener("click", () => {
+  if (activeMusicMode === "cute") {
+    switchMusicMode("birthday");
+  } else if (birthdayMusic.paused) {
+    switchMusicMode("birthday");
+  } else {
+    pauseAllMusic();
+  }
+});
+
+cuteMusicToggle.addEventListener("click", () => {
+  if (activeMusicMode === "cute" && !cuteMusic.paused) {
+    pauseAllMusic();
+  } else {
+    switchMusicMode("cute");
+  }
+});
+
+[birthdayMusic, cuteMusic].forEach((audio) => {
+  audio.addEventListener("play", updateMusicControls);
+  audio.addEventListener("pause", updateMusicControls);
+});
+
+updateMusicControls();
 
 function handleWindowResize() {
   resizeCanvas();
