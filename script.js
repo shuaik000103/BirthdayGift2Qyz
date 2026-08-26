@@ -652,13 +652,17 @@ async function loadPhotoGroupManifests() {
 
 async function loadAdaptivePhotoSources() {
   const pageImages = [...document.querySelectorAll("[data-photo-base]")];
-  const imageBases = [...new Set(pageImages.map((image) => image.dataset.photoBase))];
+  const imageBases = [
+    ...pageImages.map((image) => image.dataset.photoBase),
+    ...stories.flatMap(getGroupPhotos),
+    ...cuteMoments.flatMap(getGroupPhotos),
+    ...albumPhotos.map((photo) => photo.image),
+    ...gesturePhotos.map((photo) => photo.image)
+  ];
 
   await Promise.all(imageBases.map((source) => findPhotoSource(source)));
 
   pageImages.forEach((image) => {
-    image.loading = "lazy";
-    image.decoding = "async";
     const source = resolvePhotoUrl(image.dataset.photoBase);
     if (source !== image.dataset.photoBase) {
       image.src = source;
@@ -883,8 +887,6 @@ function renderWishGallery() {
     galleryItem.setAttribute("aria-label", entry.caption);
 
     const image = document.createElement("img");
-    image.loading = "lazy";
-    image.decoding = "async";
     image.src = resolvePhotoUrl(entry.image);
     image.alt = entry.alt;
     galleryItem.appendChild(image);
@@ -957,9 +959,7 @@ async function loadWishImageManifest() {
     updateWishLoadState("");
   }
 
-  if (!wishGalleryPanel.hidden) {
-    renderWishGallery();
-  }
+  renderWishGallery();
 }
 
 function easeOutCubic(progress) {
