@@ -78,7 +78,6 @@ img {
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(22, 14, 26, 0.28), rgba(22, 14, 26, 0.12)),
-    url("pics/login-bg/login-bg-poster.webp?v=20260826-1") center / cover no-repeat,
     url("pics/login-bg/login-bg.png") center / cover no-repeat;
   transition:
     opacity 420ms ease,
@@ -455,7 +454,6 @@ img {
 .hero-media {
   background:
     linear-gradient(90deg, rgba(22, 14, 26, 0.74) 0%, rgba(22, 14, 26, 0.44) 38%, rgba(22, 14, 26, 0.18) 72%),
-    url("assets/birthday-museum-hero.webp?v=20260826-1") center / cover no-repeat,
     url("assets/birthday-museum-hero.png") center / cover no-repeat;
   transform: scale(1.02);
 }
@@ -3660,7 +3658,6 @@ img {
   .hero-media {
     background:
       linear-gradient(180deg, rgba(22, 14, 26, 0.72), rgba(22, 14, 26, 0.42) 58%, rgba(22, 14, 26, 0.24)),
-      url("assets/birthday-museum-hero.webp?v=20260826-1") center / cover no-repeat,
       url("assets/birthday-museum-hero.png") center / cover no-repeat;
   }
 

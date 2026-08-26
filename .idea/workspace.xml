@@ -7,10 +7,7 @@
     <list default="true" id="eae04ab9-f4df-447c-94a3-317eaaa54423" name="更改" comment="去除解密功能">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/gifts/card-02.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pics/gifts/card-02.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/gifts/card-03.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pics/gifts/card-03.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pics/gifts/card-04.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pics/gifts/card-04.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pics/gifts/card-01.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pics/gifts/card-01.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

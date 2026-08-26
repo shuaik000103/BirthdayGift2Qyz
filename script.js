@@ -2,24 +2,13 @@
 
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
 const PHOTO_EXTENSION_HINTS = [
-  ["pics/gesture/", "webp"],
-  ["pics/album/", "webp"],
-  ["pics/certificate/", "webp"],
-  ["pics/cute/", "webp"],
-  ["pics/gifts/", "webp"],
-  ["pics/roco/", "webp"],
-  ["pics/timeline/", "webp"],
-  ["wishes/", "webp"]
-];
-const ORIGINAL_PHOTO_EXTENSION_HINTS = [
   ["pics/gesture/", "png"],
   ["pics/album/", "png"],
   ["pics/certificate/", "png"],
   ["pics/cute/", "jpg"],
   ["pics/gifts/", "jpg"],
   ["pics/roco/", "jpg"],
-  ["pics/timeline/", "jpg"],
-  ["wishes/", "png"]
+  ["pics/timeline/", "jpg"]
 ];
 const resolvedPhotoSources = new Map();
 const photoSourceLookups = new Map();
@@ -469,53 +458,12 @@ function getPhotoBase(source) {
 
 function getPreferredPhotoSource(source) {
   const value = String(source || "");
-  if (!value) {
+  if (!value || hasSupportedImageExtension(value)) {
     return value;
   }
 
-  const basePath = getPhotoBase(value);
-  const hint = PHOTO_EXTENSION_HINTS.find(([directory]) => basePath.startsWith(directory));
-  if (hint) {
-    return `${basePath}.${hint[1]}`;
-  }
-
-  return hasSupportedImageExtension(value) ? value : null;
-}
-
-function getOriginalPhotoSource(source) {
-  const value = String(source || "");
-  const basePath = getPhotoBase(value);
-  const hint = ORIGINAL_PHOTO_EXTENSION_HINTS.find(([directory]) => basePath.startsWith(directory));
-
-  if (hint) {
-    return `${basePath}.${hint[1]}`;
-  }
-
-  return hasSupportedImageExtension(value) ? value : null;
-}
-
-function bindImageFallback(image, fallbackSource) {
-  if (!image || !fallbackSource) {
-    return;
-  }
-
-  if (image.dataset.fallbackSource !== fallbackSource) {
-    image.dataset.fallbackAttempted = "false";
-  }
-  image.dataset.fallbackSource = fallbackSource;
-  if (image.dataset.fallbackBound === "true") {
-    return;
-  }
-
-  image.dataset.fallbackBound = "true";
-  image.addEventListener("error", () => {
-    if (image.dataset.fallbackAttempted === "true") {
-      return;
-    }
-
-    image.dataset.fallbackAttempted = "true";
-    image.src = image.dataset.fallbackSource;
-  });
+  const hint = PHOTO_EXTENSION_HINTS.find(([directory]) => value.startsWith(directory));
+  return hint ? `${value}.${hint[1]}` : null;
 }
 
 function resolvePhotoUrl(source) {
@@ -536,12 +484,6 @@ function findPhotoSource(source) {
     return Promise.resolve(source);
   }
 
-  const preferredSource = getPreferredPhotoSource(source);
-  if (preferredSource && preferredSource !== source) {
-    resolvedPhotoSources.set(getPhotoBase(source), preferredSource);
-    return Promise.resolve(preferredSource);
-  }
-
   if (hasSupportedImageExtension(source)) {
     resolvedPhotoSources.set(getPhotoBase(source), source);
     return Promise.resolve(source);
@@ -550,6 +492,14 @@ function findPhotoSource(source) {
   const basePath = getPhotoBase(source);
   if (photoSourceLookups.has(basePath)) {
     return photoSourceLookups.get(basePath);
+  }
+
+  const preferredSource = getPreferredPhotoSource(source);
+  if (preferredSource && preferredSource !== source) {
+    resolvedPhotoSources.set(basePath, preferredSource);
+    const lookup = Promise.resolve(preferredSource);
+    photoSourceLookups.set(basePath, lookup);
+    return lookup;
   }
 
   const lookup = (async () => {
@@ -709,7 +659,6 @@ async function loadAdaptivePhotoSources() {
   pageImages.forEach((image) => {
     image.loading = "lazy";
     image.decoding = "async";
-    bindImageFallback(image, getOriginalPhotoSource(image.dataset.photoBase));
     const source = resolvePhotoUrl(image.dataset.photoBase);
     if (source !== image.dataset.photoBase) {
       image.src = source;
@@ -739,7 +688,6 @@ function getPhotoCollection(collectionName) {
 }
 
 function openPhotoModalSource(source, alt = "", caption = "") {
-  bindImageFallback(photoModalImage, getOriginalPhotoSource(source));
   photoModalImage.src = resolvePhotoUrl(source);
   photoModalImage.alt = alt;
   photoCaption.textContent = caption;
@@ -877,7 +825,6 @@ function showWishEntry(entry) {
     wishStage.classList.add("has-image");
     wishPlaceholder.hidden = true;
     wishImage.hidden = false;
-    bindImageFallback(wishImage, getOriginalPhotoSource(entry.image));
     wishImage.src = resolvePhotoUrl(entry.image);
     wishImage.alt = entry.alt;
     syncImageFrameWhenReady(wishStage, wishImage, "--wish-aspect");
@@ -938,7 +885,6 @@ function renderWishGallery() {
     const image = document.createElement("img");
     image.loading = "lazy";
     image.decoding = "async";
-    bindImageFallback(image, getOriginalPhotoSource(entry.image));
     image.src = resolvePhotoUrl(entry.image);
     image.alt = entry.alt;
     galleryItem.appendChild(image);
@@ -1391,7 +1337,6 @@ function updateTimeline(index, photoIndex = 0, direction = 0) {
   activeTimelinePhotoIndex = ((photoIndex % photos.length) + photos.length) % photos.length;
   const source = photos[activeTimelinePhotoIndex];
 
-  bindImageFallback(timelinePreviewImage, getOriginalPhotoSource(source));
   timelinePreviewImage.dataset.photoBase = source;
   timelinePreviewImage.src = resolvePhotoUrl(source);
   timelinePreviewImage.alt = `${story.alt} · 第 ${activeTimelinePhotoIndex + 1} 张`;
@@ -1430,7 +1375,6 @@ function updateCuteMoment(index, photoIndex = 0, direction = 0) {
   activeCutePhotoIndex = ((photoIndex % photos.length) + photos.length) % photos.length;
   const source = photos[activeCutePhotoIndex];
 
-  bindImageFallback(cuteMomentImage, getOriginalPhotoSource(source));
   cuteMomentImage.dataset.securePhoto = source;
   cuteMomentImage.dataset.photoBase = source;
   cuteMomentImage.src = resolvePhotoUrl(source);
